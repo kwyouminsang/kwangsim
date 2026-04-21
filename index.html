@@ -4,1321 +4,912 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>광고심리학 — 중간고사 모의고사</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0c0c0f;
-    --bg2: #13131a;
-    --bg3: #1a1a24;
-    --card: #16161f;
-    --card2: #1e1e2a;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.13);
-    --accent: #c8a96e;
-    --accent2: #e8c98e;
-    --accent-glow: rgba(200,169,110,0.15);
-    --accent-dim: rgba(200,169,110,0.08);
-    --text: #f0ede8;
-    --text2: #a09a90;
-    --text3: #5a5550;
-    --correct: #4a9966;
-    --correct-bg: rgba(74,153,102,0.12);
-    --correct-border: rgba(74,153,102,0.35);
-    --wrong: #c05050;
-    --wrong-bg: rgba(192,80,80,0.12);
-    --wrong-border: rgba(192,80,80,0.35);
-    --purple: #8b7fc8;
-    --purple-bg: rgba(139,127,200,0.1);
-    --blue: #5a8fc8;
-    --teal: #4a9fa8;
-    --radius: 12px;
-    --radius-lg: 18px;
-    --radius-xl: 28px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  
-  html { scroll-behavior: smooth; }
-  
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Serif KR', serif;
-    font-size: 15px;
-    line-height: 1.75;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Noise overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ── SCREENS ── */
-  .screen { display: none; position: relative; z-index: 1; }
-  .screen.active { display: block; }
-
-  /* ── INTRO ── */
-  #intro {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    text-align: center;
-  }
-
-  .intro-ornament {
-    font-family: 'DM Serif Display', serif;
-    font-style: italic;
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 32px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.2s forwards;
-  }
-
-  .intro-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(36px, 6vw, 68px);
-    font-weight: 400;
-    line-height: 1.15;
-    letter-spacing: -1px;
-    color: var(--text);
-    margin-bottom: 8px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.35s forwards;
-  }
-
-  .intro-title em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .intro-sub {
-    font-size: 14px;
-    color: var(--text2);
-    letter-spacing: 1px;
-    margin-bottom: 56px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.5s forwards;
-  }
-
-  .intro-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    max-width: 680px;
-    width: 100%;
-    margin-bottom: 48px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.65s forwards;
-  }
-
-  .intro-stat {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 16px;
-  }
-
-  .intro-stat .num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 32px;
-    color: var(--accent);
-    display: block;
-  }
-
-  .intro-stat .lbl {
-    font-size: 12px;
-    color: var(--text2);
-    letter-spacing: 0.5px;
-    margin-top: 2px;
-  }
-
-  .intro-chapters {
-    max-width: 680px;
-    width: 100%;
-    margin-bottom: 48px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.75s forwards;
-  }
-
-  .chapter-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .chapter-tag {
-    background: var(--accent-dim);
-    border: 1px solid rgba(200,169,110,0.2);
-    color: var(--accent);
-    font-size: 12px;
-    padding: 5px 14px;
-    border-radius: 999px;
-    letter-spacing: 0.3px;
-  }
-
-  .btn-start {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--accent);
-    color: #0c0c0f;
-    font-family: 'Noto Serif KR', serif;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 16px 40px;
-    border-radius: 999px;
-    border: none;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.2s;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.85s forwards;
-  }
-
-  .btn-start:hover {
-    background: var(--accent2);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(200,169,110,0.25);
-  }
-
-  .btn-start svg { transition: transform 0.2s; }
-  .btn-start:hover svg { transform: translateX(4px); }
-
-  /* ── QUIZ HEADER ── */
-  #quiz-screen { min-height: 100vh; padding: 0 0 80px; }
-
-  .quiz-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(12,12,15,0.92);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-  }
-
-  .quiz-header-inner {
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    height: 64px;
-  }
-
-  .quiz-logo {
-    font-family: 'DM Serif Display', serif;
-    font-style: italic;
-    font-size: 16px;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-
-  .progress-bar-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .progress-meta {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .progress-track {
-    height: 3px;
-    background: var(--border2);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 999px;
-    transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
-    width: 0%;
-  }
-
-  .score-badge {
-    background: var(--accent-dim);
-    border: 1px solid rgba(200,169,110,0.2);
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-
-  /* ── SECTION HEADER ── */
-  .section-divider {
-    max-width: 800px;
-    margin: 48px auto 24px;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .section-divider-line { flex: 1; height: 1px; background: var(--border); }
-
-  .section-divider-label {
-    font-family: 'DM Serif Display', serif;
-    font-style: italic;
-    font-size: 13px;
-    color: var(--text3);
-    white-space: nowrap;
-    letter-spacing: 1px;
-  }
-
-  /* ── QUESTION CARD ── */
-  .q-wrap {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  .q-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 28px 32px;
-    margin-bottom: 14px;
-    transition: border-color 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .q-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: var(--border2);
-    transition: background 0.3s;
-  }
-
-  .q-card.answered::before { background: var(--accent); }
-  .q-card.answered-correct::before { background: var(--correct); }
-  .q-card.answered-wrong::before { background: var(--wrong); }
-
-  .q-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-
-  .q-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 1px;
-  }
-
-  .q-badge {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 1px;
-    padding: 3px 10px;
-    border-radius: 999px;
-    text-transform: uppercase;
-  }
-
-  .badge-obj {
-    background: var(--purple-bg);
-    color: var(--purple);
-    border: 1px solid rgba(139,127,200,0.25);
-  }
-
-  .badge-tf {
-    background: rgba(74,159,168,0.1);
-    color: var(--teal);
-    border: 1px solid rgba(74,159,168,0.25);
-  }
-
-  .badge-hard {
-    background: rgba(192,80,80,0.1);
-    color: #e07070;
-    border: 1px solid rgba(192,80,80,0.25);
-    margin-left: auto;
-  }
-
-  .q-text {
-    font-size: 15.5px;
-    line-height: 1.7;
-    color: var(--text);
-    margin-bottom: 20px;
-    word-break: keep-all;
-  }
-
-  .q-text .highlight {
-    background: linear-gradient(to bottom, transparent 60%, rgba(200,169,110,0.25) 60%);
-    color: var(--accent2);
-  }
-
-  /* ── OPTIONS ── */
-  .opts { display: flex; flex-direction: column; gap: 8px; }
-
-  .opt {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 13px 16px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    font-family: 'Noto Serif KR', serif;
-    font-size: 14px;
-    color: var(--text2);
-    line-height: 1.6;
-    text-align: left;
-    transition: all 0.15s;
-    width: 100%;
-  }
-
-  .opt:hover:not(:disabled) {
-    background: var(--card2);
-    border-color: var(--border2);
-    color: var(--text);
-  }
-
-  .opt:disabled { cursor: default; }
-
-  .opt-idx {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text3);
-    min-width: 20px;
-    padding-top: 1px;
-    font-weight: 500;
-    flex-shrink: 0;
-    transition: color 0.15s;
-  }
-
-  .opt:hover:not(:disabled) .opt-idx { color: var(--accent); }
-
-  .opt.opt-correct {
-    background: var(--correct-bg);
-    border-color: var(--correct-border);
-    color: #7dd4a0;
-  }
-
-  .opt.opt-correct .opt-idx { color: var(--correct); }
-
-  .opt.opt-wrong {
-    background: var(--wrong-bg);
-    border-color: var(--wrong-border);
-    color: #e09090;
-  }
-
-  .opt.opt-wrong .opt-idx { color: var(--wrong); }
-
-  .opt.opt-selected-wrong {
-    background: var(--wrong-bg);
-    border-color: var(--wrong-border);
-    color: #e09090;
-  }
-
-  /* T/F */
-  .tf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-  .tf-btn {
-    padding: 16px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--text2);
-    transition: all 0.15s;
-    text-align: center;
-  }
-
-  .tf-btn:hover:not(:disabled) {
-    background: var(--card2);
-    border-color: var(--border2);
-    color: var(--text);
-  }
-
-  .tf-btn:disabled { cursor: default; }
-
-  .tf-btn .tf-label {
-    display: block;
-    font-family: 'Noto Serif KR', serif;
-    font-size: 11px;
-    letter-spacing: 1px;
-    margin-top: 4px;
-    color: var(--text3);
-  }
-
-  .tf-btn.tf-correct { background: var(--correct-bg); border-color: var(--correct-border); color: #7dd4a0; }
-  .tf-btn.tf-correct .tf-label { color: var(--correct); }
-  .tf-btn.tf-wrong { background: var(--wrong-bg); border-color: var(--wrong-border); color: #e09090; }
-  .tf-btn.tf-wrong .tf-label { color: var(--wrong); }
-
-  /* ── FEEDBACK ── */
-  .feedback {
-    display: none;
-    margin-top: 14px;
-    padding: 14px 16px;
-    border-radius: var(--radius);
-    font-size: 13.5px;
-    line-height: 1.65;
-    border-left: 3px solid;
-  }
-
-  .feedback.show { display: block; }
-
-  .feedback.fb-ok {
-    background: var(--correct-bg);
-    border-color: var(--correct);
-    color: #8dd8a8;
-  }
-
-  .feedback.fb-no {
-    background: var(--wrong-bg);
-    border-color: var(--wrong);
-    color: #e8a0a0;
-  }
-
-  .feedback strong { color: inherit; font-weight: 700; }
-
-  /* ── RESULT SCREEN ── */
-  #result-screen {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 24px;
-    text-align: center;
-  }
-
-  .result-label {
-    font-family: 'DM Serif Display', serif;
-    font-style: italic;
-    font-size: 12px;
-    letter-spacing: 4px;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    animation: fadeUp 0.6s both;
-  }
-
-  .result-score {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(72px, 14vw, 120px);
-    color: var(--accent);
-    line-height: 1;
-    animation: fadeUp 0.6s 0.1s both;
-  }
-
-  .result-total {
-    font-size: 14px;
-    color: var(--text3);
-    letter-spacing: 2px;
-    margin-bottom: 40px;
-    animation: fadeUp 0.6s 0.2s both;
-  }
-
-  .result-message {
-    font-size: 20px;
-    color: var(--text2);
-    max-width: 400px;
-    line-height: 1.6;
-    margin-bottom: 48px;
-    animation: fadeUp 0.6s 0.3s both;
-  }
-
-  .result-breakdown {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    max-width: 500px;
-    width: 100%;
-    margin-bottom: 48px;
-    animation: fadeUp 0.6s 0.4s both;
-  }
-
-  .rb-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 12px;
-  }
-
-  .rb-num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 28px;
-    display: block;
-  }
-
-  .rb-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-  .rb-card.rb-correct .rb-num { color: var(--correct); }
-  .rb-card.rb-wrong .rb-num { color: var(--wrong); }
-  .rb-card.rb-skip .rb-num { color: var(--text3); }
-
-  .btn-retry {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid rgba(200,169,110,0.4);
-    font-family: 'Noto Serif KR', serif;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 14px 32px;
-    border-radius: 999px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: all 0.2s;
-    animation: fadeUp 0.6s 0.5s both;
-  }
-
-  .btn-retry:hover {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  /* ── REVIEW ── */
-  .review-section {
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-    text-align: left;
-    padding: 0 24px;
-    animation: fadeUp 0.6s 0.6s both;
-  }
-
-  .review-title {
-    font-family: 'DM Serif Display', serif;
-    font-style: italic;
-    font-size: 22px;
-    color: var(--text2);
-    margin: 48px 0 20px;
-    text-align: center;
-  }
-
-  .review-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 10px;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-  }
-
-  .review-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    margin-top: 7px;
-    flex-shrink: 0;
-  }
-
-  .dot-correct { background: var(--correct); }
-  .dot-wrong { background: var(--wrong); }
-
-  .review-q { font-size: 13px; color: var(--text2); line-height: 1.55; }
-  .review-q .tag { font-size: 11px; color: var(--text3); margin-top: 3px; display: block; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .q-card { animation: fadeUp 0.4s both; }
-
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(200,169,110,0.3); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 600px) {
-    .intro-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .q-card { padding: 20px 18px; }
-    .result-breakdown { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .quiz-header-inner { gap: 10px; }
-    .score-badge { font-size: 11px; padding: 5px 10px; }
-  }
-
-  /* Divider decoration */
-  .deco-divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    max-width: 800px;
-    margin: 40px auto 8px;
-    padding: 0 24px;
-  }
-  .deco-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--border2)); }
-  .deco-line.rev { background: linear-gradient(to left, transparent, var(--border2)); }
-  .deco-diamond {
-    width: 6px; height: 6px;
-    background: var(--accent);
-    transform: rotate(45deg);
-    opacity: 0.6;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #0c0c0f;
+  --card: #16161f;
+  --card2: #1e1e2a;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --accent: #c8a96e;
+  --accent2: #e8c98e;
+  --accent-dim: rgba(200,169,110,0.08);
+  --text: #f0ede8;
+  --text2: #a09a90;
+  --text3: #5a5550;
+  --ok: #4a9966;
+  --ok-bg: rgba(74,153,102,0.12);
+  --ok-bd: rgba(74,153,102,0.35);
+  --no: #c05050;
+  --no-bg: rgba(192,80,80,0.12);
+  --no-bd: rgba(192,80,80,0.35);
+  --purple: #8b7fc8;
+  --purple-bg: rgba(139,127,200,0.1);
+  --teal: #4a9fa8;
+  --r: 12px;
+  --rl: 18px;
+  --serif: 'DM Serif Display', 'Georgia', serif;
+  --sans: 'Noto Serif KR', 'Apple SD Gothic Neo', 'Malgun Gothic', serif;
+  --mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.75;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.on { display: block; }
+#intro.on {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  text-align: center;
+}
+#result.on {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.a1 { opacity:0; animation: up .8s .15s forwards; }
+.a2 { opacity:0; animation: up .8s .30s forwards; }
+.a3 { opacity:0; animation: up .8s .45s forwards; }
+.a4 { opacity:0; animation: up .8s .60s forwards; }
+.a5 { opacity:0; animation: up .8s .75s forwards; }
+.a6 { opacity:0; animation: up .8s .90s forwards; }
+
+/* ── INTRO ── */
+.eyebrow {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+.big-title {
+  font-family: var(--serif);
+  font-size: clamp(38px, 7vw, 72px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+}
+.big-title em { font-style: italic; color: var(--accent); }
+.sub {
+  font-size: 13px;
+  color: var(--text2);
+  letter-spacing: 1.5px;
+  margin-bottom: 52px;
+}
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 14px;
+  max-width: 640px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px 16px;
+}
+.stat-box .n {
+  display: block;
+  font-family: var(--serif);
+  font-size: 30px;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-box .l {
+  display: block;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 5px;
+  letter-spacing: .5px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 640px;
+  width: 100%;
+  margin-bottom: 48px;
+}
+.tag {
+  background: var(--accent-dim);
+  border: 1px solid rgba(200,169,110,0.2);
+  color: var(--accent);
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 999px;
+}
+.btn-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #0c0c0f;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 16px 42px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: .5px;
+  transition: background .2s, transform .2s, box-shadow .2s;
+}
+.btn-go:hover {
+  background: var(--accent2);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(200,169,110,.28);
+}
+
+/* ── QUIZ HEADER ── */
+#quiz { min-height: 100vh; padding-bottom: 80px; }
+.qhdr {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background: rgba(12,12,15,.93);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+.qhdr-in {
+  max-width: 820px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 62px;
+}
+.qlogo {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.prog-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.prog-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+.prog-track {
+  height: 3px;
+  background: var(--border2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 99px;
+  width: 0%;
+  transition: width .5s cubic-bezier(.34,1.56,.64,1);
+}
+.score-pill {
+  background: var(--accent-dim);
+  border: 1px solid rgba(200,169,110,.2);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── SECTION DIVIDER ── */
+.sec-div {
+  max-width: 820px;
+  margin: 44px auto 20px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.sec-line { flex: 1; height: 1px; background: var(--border); }
+.sec-lbl {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--text3);
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+/* ── QUESTION CARD ── */
+.qwrap { max-width: 820px; margin: 0 auto; padding: 0 20px; }
+.qcard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--rl);
+  padding: 26px 28px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  animation: up .35s both;
+}
+.qcard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--border2);
+  transition: background .3s;
+}
+.qcard.c-ok::before { background: var(--ok); }
+.qcard.c-no::before { background: var(--no); }
+
+.qmeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.qno {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 1px;
+}
+.bdg {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .8px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.bdg-obj { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(139,127,200,.25); }
+.bdg-tf  { background: rgba(74,159,168,.1); color: var(--teal); border: 1px solid rgba(74,159,168,.25); }
+.bdg-hard { background: rgba(192,80,80,.1); color: #e07070; border: 1px solid rgba(192,80,80,.25); margin-left: auto; }
+
+.qtxt {
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--text);
+  margin-bottom: 18px;
+  word-break: keep-all;
+}
+.qtxt em { font-style: normal; color: var(--accent2); }
+.qtxt .case {
+  display: block;
+  background: rgba(200,169,110,.06);
+  border-left: 2px solid rgba(200,169,110,.3);
+  padding: 10px 14px;
+  margin-top: 10px;
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+  font-style: italic;
+}
+
+/* ── OPTIONS ── */
+.opts { display: flex; flex-direction: column; gap: 7px; }
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 15px;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  text-align: left;
+  transition: background .12s, border-color .12s, color .12s;
+  width: 100%;
+}
+.opt:hover:not([disabled]) { background: var(--card2); border-color: var(--border2); color: var(--text); }
+.opt[disabled] { cursor: default; }
+.opt-i {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  min-width: 18px;
+  padding-top: 2px;
+  flex-shrink: 0;
+  transition: color .12s;
+}
+.opt:hover:not([disabled]) .opt-i { color: var(--accent); }
+.opt.ok { background: var(--ok-bg); border-color: var(--ok-bd); color: #7dd4a0; }
+.opt.ok .opt-i { color: var(--ok); }
+.opt.no { background: var(--no-bg); border-color: var(--no-bd); color: #e09090; }
+.opt.no .opt-i { color: var(--no); }
+
+/* T/F */
+.tfrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tfbtn {
+  padding: 15px 10px;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 24px;
+  color: var(--text2);
+  text-align: center;
+  transition: background .12s, border-color .12s, color .12s;
+  line-height: 1;
+}
+.tfbtn:hover:not([disabled]) { background: var(--card2); border-color: var(--border2); color: var(--text); }
+.tfbtn[disabled] { cursor: default; }
+.tflabel {
+  display: block;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: .5px;
+  margin-top: 5px;
+  color: var(--text3);
+}
+.tfbtn.ok { background: var(--ok-bg); border-color: var(--ok-bd); color: #7dd4a0; }
+.tfbtn.ok .tflabel { color: var(--ok); }
+.tfbtn.no { background: var(--no-bg); border-color: var(--no-bd); color: #e09090; }
+.tfbtn.no .tflabel { color: var(--no); }
+
+/* ── FEEDBACK ── */
+.fb {
+  display: none;
+  margin-top: 12px;
+  padding: 13px 15px;
+  border-radius: var(--r);
+  font-size: 13.5px;
+  line-height: 1.65;
+  border-left: 3px solid;
+  word-break: keep-all;
+}
+.fb.on { display: block; }
+.fb.ok { background: var(--ok-bg); border-color: var(--ok); color: #8dd8a8; }
+.fb.no { background: var(--no-bg); border-color: var(--no); color: #e8a0a0; }
+.fb strong { color: inherit; }
+
+/* ── RESULT ── */
+.res-eyebrow {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  animation: up .6s both;
+}
+.res-score {
+  font-family: var(--serif);
+  font-size: clamp(80px, 16vw, 130px);
+  color: var(--accent);
+  line-height: 1;
+  animation: up .6s .1s both;
+}
+.res-of {
+  font-size: 13px;
+  color: var(--text3);
+  letter-spacing: 2px;
+  margin-bottom: 36px;
+  animation: up .6s .2s both;
+}
+.res-msg {
+  font-size: 18px;
+  color: var(--text2);
+  max-width: 380px;
+  line-height: 1.65;
+  margin-bottom: 44px;
+  animation: up .6s .3s both;
+}
+.res-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 14px;
+  max-width: 480px;
+  width: 100%;
+  margin-bottom: 44px;
+  animation: up .6s .4s both;
+}
+.rc {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 10px;
+  text-align: center;
+}
+.rc .rn {
+  display: block;
+  font-family: var(--serif);
+  font-size: 30px;
+}
+.rc .rl { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.rc.ok .rn { color: var(--ok); }
+.rc.no .rn { color: var(--no); }
+.rc.sk .rn { color: var(--text3); }
+
+.btn-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid rgba(200,169,110,.4);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 14px 32px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, transform .2s;
+  animation: up .6s .5s both;
+}
+.btn-retry:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ── REVIEW ── */
+.rev-section {
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  padding: 0 20px 60px;
+  animation: up .6s .6s both;
+}
+.rev-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--text2);
+  margin: 48px 0 18px;
+  text-align: center;
+}
+.rev-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.rdot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--no);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+.rq { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.rtag { font-size: 11px; color: var(--text3); margin-top: 3px; display: block; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 580px) {
+  .qcard { padding: 18px 16px; }
+  .stat-row { grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .qhdr-in { gap: 8px; }
+  .score-pill { font-size: 10px; padding: 5px 9px; }
+  .big-title { font-size: clamp(32px,8vw,52px); }
+}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ INTRO SCREEN ═══════════════ -->
-<div id="intro" class="screen active">
-  <p class="intro-ornament">Advertising Psychology · Mid-term Exam</p>
-  <h1 class="intro-title"><em>광고심리학</em><br>중간고사 모의고사</h1>
-  <p class="intro-sub">고난도 40문항 · 객관식 & T/F 혼합</p>
+<!-- ═══ INTRO ═══ -->
+<div id="intro" class="screen on">
+  <p class="eyebrow a1">Advertising Psychology · Mid-term Exam</p>
+  <h1 class="big-title a2"><em>광고심리학</em><br>중간고사 모의고사</h1>
+  <p class="sub a3">고난도 40문항 &nbsp;·&nbsp; 객관식 &amp; T/F 혼합</p>
 
-  <div class="intro-grid">
-    <div class="intro-stat">
-      <span class="num">40</span>
-      <span class="lbl">총 문항</span>
-    </div>
-    <div class="intro-stat">
-      <span class="num">7</span>
-      <span class="lbl">출제 단원</span>
-    </div>
-    <div class="intro-stat">
-      <span class="num">★★★</span>
-      <span class="lbl">고난도</span>
-    </div>
+  <div class="stat-row a4">
+    <div class="stat-box"><span class="n">40</span><span class="l">총 문항</span></div>
+    <div class="stat-box"><span class="n">7</span><span class="l">출제 단원</span></div>
+    <div class="stat-box"><span class="n">★★★</span><span class="l">고난도</span></div>
   </div>
 
-  <div class="intro-chapters">
-    <div class="chapter-list">
-      <span class="chapter-tag">감각·지각</span>
-      <span class="chapter-tag">주의</span>
-      <span class="chapter-tag">동기이론</span>
-      <span class="chapter-tag">관여도</span>
-      <span class="chapter-tag">학습(조건화)</span>
-      <span class="chapter-tag">기억구조</span>
-      <span class="chapter-tag">감정</span>
-    </div>
+  <div class="tags a5">
+    <span class="tag">감각·지각</span><span class="tag">주의</span>
+    <span class="tag">동기이론</span><span class="tag">관여도</span>
+    <span class="tag">학습·조건화</span><span class="tag">기억구조</span>
+    <span class="tag">감정</span>
   </div>
 
-  <button class="btn-start" onclick="startQuiz()">
+  <button class="btn-go a6" onclick="startQuiz()">
     시험 시작하기
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
       <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </button>
 </div>
 
-<!-- ═══════════════ QUIZ SCREEN ═══════════════ -->
-<div id="quiz-screen" class="screen">
-  <header class="quiz-header">
-    <div class="quiz-header-inner">
-      <span class="quiz-logo">광고심리학</span>
-      <div class="progress-bar-wrap">
-        <div class="progress-meta">
-          <span id="prog-text">0 / 40</span>
-          <span id="prog-pct">0%</span>
+<!-- ═══ QUIZ ═══ -->
+<div id="quiz" class="screen">
+  <header class="qhdr">
+    <div class="qhdr-in">
+      <span class="qlogo">광고심리학</span>
+      <div class="prog-wrap">
+        <div class="prog-meta">
+          <span id="ptxt">0 / 40</span>
+          <span id="ppct">0%</span>
         </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="prog-fill"></div>
-        </div>
+        <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
       </div>
-      <div class="score-badge" id="score-badge">0점</div>
+      <div class="score-pill" id="spill">0점</div>
     </div>
   </header>
-  <div id="questions-area"></div>
+  <div id="qarea"></div>
 </div>
 
-<!-- ═══════════════ RESULT SCREEN ═══════════════ -->
-<div id="result-screen" class="screen">
-  <p class="result-label">Final Result</p>
-  <div class="result-score" id="res-score">0</div>
-  <p class="result-total">/ 40문항</p>
-  <p class="result-message" id="res-msg"></p>
-  <div class="result-breakdown">
-    <div class="rb-card rb-correct">
-      <span class="rb-num" id="res-correct">0</span>
-      <span class="rb-lbl">정답</span>
-    </div>
-    <div class="rb-card rb-wrong">
-      <span class="rb-num" id="res-wrong">0</span>
-      <span class="rb-lbl">오답</span>
-    </div>
-    <div class="rb-card rb-skip">
-      <span class="rb-num" id="res-skip">0</span>
-      <span class="rb-lbl">미응답</span>
-    </div>
+<!-- ═══ RESULT ═══ -->
+<div id="result" class="screen">
+  <p class="res-eyebrow">Final Result</p>
+  <div class="res-score" id="rscore">0</div>
+  <p class="res-of">/ 40문항</p>
+  <p class="res-msg" id="rmsg"></p>
+  <div class="res-grid">
+    <div class="rc ok"><span class="rn" id="rok">0</span><span class="rl">정답</span></div>
+    <div class="rc no"><span class="rn" id="rno">0</span><span class="rl">오답</span></div>
+    <div class="rc sk"><span class="rn" id="rsk">0</span><span class="rl">미응답</span></div>
   </div>
-  <button class="btn-retry" onclick="retryQuiz()">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+  <button class="btn-retry" onclick="retry()">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
       <path d="M2 8a6 6 0 1 1 1.5 4M2 12V8h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     다시 풀기
   </button>
-
-  <div class="review-section">
-    <p class="review-title">틀린 문제 복습</p>
-    <div id="review-list"></div>
+  <div class="rev-section">
+    <p class="rev-title">틀린 문제 복습</p>
+    <div id="revlist"></div>
   </div>
 </div>
 
 <script>
-const QS = [
-  // ── 1~2주차: 감각·지각·주의
-  {
-    type:'obj', hard:true,
-    text:'다음 중 지각적 조직화 원리에서 <span class="highlight">군집화(grouping)</span>의 게슈탈트 법칙에 해당하지 않는 것은?',
-    opts:['유사성의 법칙: 유사한 자극들은 하나의 집단으로 묶인다','근접성의 법칙: 가까이 있는 자극들은 함께 묶여 지각된다','연속성의 법칙: 연속되는 패턴을 따라 자극을 지각한다','완결성의 법칙: 불완전한 형태를 완전한 것으로 지각한다','대비의 법칙: 서로 반대되는 색상과 형태를 하나의 단위로 지각한다'],
-    ans:4,
-    exp:'게슈탈트 군집화 법칙에는 유사성, 근접성, 연속성, 완결성(폐쇄성) 등이 포함됩니다. "대비의 법칙"은 군집화 원리가 아닌 대비 원리(contrast principle)로, 자극이 주변과 대비되어 더 눈에 띄는 별도의 현상입니다.'
-  },
-  {
-    type:'tf', hard:false,
-    text:'[T/F] 차이역(JND; Just Noticeable Difference)은 소비자가 두 자극의 차이를 50% 확률로 탐지할 수 있는 자극의 최소 차이량이며, 이를 마케팅에서 활용하려면 긍정적 변화는 JND 이상, 부정적 변화(가격 인상, 용량 축소)는 JND 이하로 제시하는 것이 전략적으로 유리하다.',
-    ans:1,
-    exp:'옳습니다. JND를 마케팅에 적용할 때, 소비자에게 유리한 변화(품질 개선 등)는 JND 이상으로 명확히 전달하고, 불리한 변화(가격 인상·용량 감소)는 JND 이하로 눈치채지 못하게 하는 것이 전략입니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'소비자의 <span class="highlight">선택적 주의(selective attention)</span>에 영향을 미치는 개인적 요인으로만 묶인 것은?',
-    opts:['신념과 지식 / 관여도 / 욕구 / 정서','크기 / 색상 / 움직임 / 위치','신기성(novelty) / 쾌락적 자극 / 선명한 자극 / 대비 원리','관여도 / 크기 / 신기성 / 정서','신념 / 크기 / 색상 / 욕구'],
-    ans:0,
-    exp:'선택적 주의에 영향을 미치는 개인적 요인은 신념·지식, 관여도, 욕구, 정서, 지각적 경계·방어, 적응 등입니다. 크기, 색상, 움직임, 위치, 신기성, 대비 등은 자극 요인에 해당합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'역하 자극(subliminal stimulus)에 대한 설명으로 <span class="highlight">가장 옳은 것</span>은?',
-    opts:['역하 자극은 절대역을 초과하는 강도로 제시되는 자극이다','역하 광고는 소비자의 무의식적 처리를 통해 행동에 영향을 줄 수 있다고 프로이트 이론에서 활용 근거를 찾는다','역하 자극은 차이역(JND) 이상으로 제시하는 것을 뜻한다','역하 자극이 소비자 구매행동에 강력하게 영향을 미친다는 것은 과학적으로 완전히 증명되어 있다','역하 자극은 청각 채널로만 전달 가능하다'],
-    ans:1,
-    exp:'역하 광고는 절대역 이하로 제시되는 자극을 통해 소비자의 무의식적 처리에 영향을 미친다는 개념으로, 프로이트의 무의식 이론이 활용 근거로 제시됩니다. 역하 자극은 절대역 이하(below threshold)의 자극이며, 효과에 대한 과학적 증거는 여전히 논쟁적입니다.'
-  },
-  {
-    type:'obj', hard:false,
-    text:'<span class="highlight">잔향기억(echoic memory)</span>과 <span class="highlight">잔상기억(iconic memory)</span>에 대한 비교 설명으로 옳은 것은?',
-    opts:['잔향기억은 시각 자극, 잔상기억은 청각 자극과 관련된다','잔상기억의 파지 시간은 약 2~3초, 잔향기억은 약 0.5초이다','잔향기억은 청각 자극이 감각기억에 잠시 머무는 것이고, 잔상기억은 시각 기억이 가공되지 않은 상태로 짧게 저장된 것이다','두 기억 모두 장기기억으로 직접 전이된다','잔향기억과 잔상기억 모두 의미적으로 부호화된 상태로 저장된다'],
-    ans:2,
-    exp:'잔상기억(iconic memory)은 시각 자극이 약 0.5초간 가공되지 않은 상태로 저장되는 것이고, 잔향기억(echoic memory)은 청각 자극이 약 2~3초간 감각기억에 머무는 것입니다.'
-  },
+const QS=[
+  // ── 감각·지각·주의 (0-4)
+  {t:'obj',h:true,
+   q:'다음 중 지각적 조직화 원리에서 <em>군집화(grouping)</em>의 게슈탈트 법칙에 해당하지 않는 것은?',
+   o:['유사성의 법칙: 유사한 자극들은 하나의 집단으로 묶인다','근접성의 법칙: 가까이 있는 자극들은 함께 묶여 지각된다','연속성의 법칙: 연속되는 패턴을 따라 자극을 지각한다','완결성의 법칙: 불완전한 형태를 완전한 것으로 지각한다','대비의 법칙: 서로 반대되는 색상과 형태를 하나의 단위로 지각한다'],
+   a:4, e:'게슈탈트 군집화 법칙은 유사성, 근접성, 연속성, 완결성(폐쇄성)입니다. "대비의 법칙"은 군집화 원리가 아닌 별도의 대비 원리(contrast principle)로, 자극이 주변과 대비되어 더 눈에 띄는 현상입니다.'},
+  {t:'tf',h:false,
+   q:'[T/F] 차이역(JND)을 마케팅에 활용할 때, 소비자에게 유리한 변화(품질 개선)는 JND 이상으로 제시하고, 불리한 변화(가격 인상·용량 감소)는 JND 이하로 제시하는 것이 전략적으로 유리하다.',
+   a:1, e:'옳습니다. JND 마케팅 전략의 핵심입니다. 좋은 변화는 눈에 띄게, 나쁜 변화는 눈치채지 못하도록 하는 것이 목표입니다.'},
+  {t:'obj',h:true,
+   q:'소비자의 <em>선택적 주의(selective attention)</em>에 영향을 미치는 개인적 요인으로만 묶인 것은?',
+   o:['신념과 지식 / 관여도 / 욕구 / 정서','크기 / 색상 / 움직임 / 위치','신기성(novelty) / 쾌락적 자극 / 선명한 자극 / 대비 원리','관여도 / 크기 / 신기성 / 정서','신념 / 크기 / 색상 / 욕구'],
+   a:0, e:'개인적 요인은 신념·지식, 관여도, 욕구, 정서, 지각적 경계·방어, 적응 등입니다. 크기·색상·움직임·위치·신기성·대비는 자극 요인에 해당합니다.'},
+  {t:'obj',h:true,
+   q:'역하 자극(subliminal stimulus)에 대한 설명으로 <em>가장 옳은 것</em>은?',
+   o:['역하 자극은 절대역을 초과하는 강도의 자극이다','역하 광고는 소비자의 무의식적 처리를 통해 행동에 영향을 줄 수 있다고 프로이트 이론에서 근거를 찾는다','역하 자극은 차이역(JND) 이상으로 제시하는 것이다','역하 자극이 구매행동에 강력히 영향을 미친다는 것은 과학적으로 완전히 증명되었다','역하 자극은 청각 채널로만 전달 가능하다'],
+   a:1, e:'역하 자극은 절대역 이하의 자극으로, 프로이트의 무의식 이론이 근거로 활용됩니다. 효과에 대한 과학적 증거는 여전히 논쟁적입니다.'},
+  {t:'obj',h:false,
+   q:'<em>잔향기억(echoic memory)</em>과 <em>잔상기억(iconic memory)</em>에 대한 비교 설명으로 옳은 것은?',
+   o:['잔향기억은 시각 자극, 잔상기억은 청각 자극과 관련된다','잔상기억 파지 시간: 약 2~3초 / 잔향기억 파지 시간: 약 0.5초','잔향기억은 청각 자극이 감각기억에 잠시 머무는 것이고, 잔상기억은 시각 기억이 가공되지 않은 상태로 짧게 저장된 것이다','두 기억 모두 장기기억으로 직접 전이된다','두 기억 모두 의미적으로 부호화된 상태로 저장된다'],
+   a:2, e:'잔상기억(iconic)은 시각 자극이 약 0.5초간 물리적 상태로 저장되는 것이고, 잔향기억(echoic)은 청각 자극이 약 2~3초간 감각기억에 머무는 것입니다.'},
 
-  // ── 동기이론
-  {
-    type:'obj', hard:true,
-    text:'프로이트 이론의 <span class="highlight">세 가지 성격 요소</span>와 그 원리를 잘못 짝지은 것은?',
-    opts:['원초아(id) — 쾌락원리(pleasure principle)','자아(ego) — 현실원리(reality principle)','초자아(superego) — 도덕원리(morality principle)','원초아(id) — 성욕과 공격욕의 원천','자아(ego) — 이상(ideal)을 지향하고 도덕적 기준을 충족시키려는 기능'],
-    ans:4,
-    exp:'이상을 지향하고 도덕적 기준을 충족시키려는 기능은 초자아(superego)의 특성입니다. 자아(ego)는 현실원리에 따라 원초아의 욕구를 사회적으로 수용 가능한 방식으로 조절합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'레빈(Lewin)의 <span class="highlight">B = f(P, E)</span> 행동 공식에 대한 설명으로 옳지 않은 것은?',
-    opts:['B는 소비자의 행동을 의미한다','f(field)는 개인이 처한 심리적 상황 전체를 의미한다','P(Person)는 내부적 성향, 가치관 등 개인 특성을 의미한다','E(Environment)는 외부 환경적 요인을 의미한다','이 공식은 소비자 행동이 오직 환경 요인(E)에 의해서만 결정됨을 주장한다'],
-    ans:4,
-    exp:'레빈의 공식은 행동(B)이 개인(P)과 환경(E)의 상호작용 함수임을 나타냅니다. 오직 환경만이 결정한다는 것이 아니라, 두 요소 모두의 역동적 상호작용을 강조합니다.'
-  },
-  {
-    type:'tf', hard:false,
-    text:'[T/F] 조절초점이론에서 <span class="highlight">촉진 초점(promotion focus)</span>은 손실을 최소화하려는 열망으로 동기화되며, 안전·안정·의무를 주요 가치로 삼는다.',
-    ans:0,
-    exp:'설명은 예방 초점(prevention focus)에 해당합니다. 촉진 초점(promotion focus)은 목표를 성취하고자 하는 열망으로 동기화되며, 성취·이득 극대화를 주요 가치로 삼습니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'균형이론(Heider)에서 소비자 A가 유명 연예인 P를 좋아하고(+), P는 특정 브랜드 X를 광고하며(+) 연결되어 있다. 이때 A는 X를 싫어한다(−)면 이 인지체계의 상태와 균형 회복 방법으로 옳은 것은?',
-    opts:['균형 상태 — 변화 불필요','불균형 상태 — A가 X에 대한 태도를 긍정으로 바꾸거나, P에 대한 태도를 부정으로 바꾸거나, P와 X의 연결을 무효화함','불균형 상태 — A가 X에 대한 태도를 더 부정적으로 강화함','균형 상태 — 세 관계의 곱이 (−)이므로 안정적','불균형 상태 — 새로운 인물 Q를 도입해야만 해소 가능'],
-    ans:1,
-    exp:'세 관계의 곱: (+)×(+)×(−) = (−) 이므로 불균형 상태입니다. 해소 방법은 ①관계 중 하나를 바꿔 곱을 (+)로 만들기 ②삼자관계 요소 대체 ③관계 무효화 중 하나입니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'인지부조화가 발생할 가능성이 높은 상황으로 <span class="highlight">모두 옳은 것</span>을 고르시오.',
-    opts:['저가품을 충동적으로 구매했을 때','고가품 구매 / 선호 대안들의 특성이 매우 다를 때 / 인적 요인 개입 / 환불이 어려울 때','저관여 제품 구매 / 반복 구매 행동 / 습관적 의사결정','여러 대안이 유사하여 차별성이 없을 때','구매 후 즉각적인 만족이 클 때'],
-    ans:1,
-    exp:'교재에서 인지부조화 발생 조건으로 제시된 것은 ①고가품·이미지 제품(중요한 구매) ②선호 대안이 매우 다른 특성 ③인적 요인(판매원 강권) 개입 ④교환·환불이 어려운 경우입니다.'
-  },
+  // ── 동기이론 (5-9)
+  {t:'obj',h:true,
+   q:'프로이트 이론의 <em>세 가지 성격 요소</em>와 그 원리를 잘못 짝지은 것은?',
+   o:['원초아(id) — 쾌락원리(pleasure principle)','자아(ego) — 현실원리(reality principle)','초자아(superego) — 도덕원리(morality principle)','원초아(id) — 성욕과 공격욕의 원천','자아(ego) — 이상을 지향하고 도덕적 기준을 충족시키려는 기능'],
+   a:4, e:'이상을 지향하고 도덕적 기준을 충족시키려는 기능은 초자아(superego)입니다. 자아(ego)는 현실원리로 원초아의 욕구를 사회적으로 수용 가능한 방식으로 조절합니다.'},
+  {t:'obj',h:true,
+   q:'레빈(Lewin)의 <em>B = f(P, E)</em> 행동 공식에 대한 설명으로 옳지 않은 것은?',
+   o:['B는 소비자의 행동을 의미한다','f(field)는 개인이 처한 심리적 상황 전체를 의미한다','P(Person)는 내부적 성향·가치관 등 개인 특성을 의미한다','E(Environment)는 외부 환경적 요인을 의미한다','이 공식은 소비자 행동이 오직 환경 요인(E)에 의해서만 결정됨을 주장한다'],
+   a:4, e:'레빈의 공식은 행동(B)이 개인(P)과 환경(E)의 상호작용 함수임을 나타냅니다. 환경 단독이 아니라 두 요소의 역동적 상호작용을 강조합니다.'},
+  {t:'tf',h:false,
+   q:'[T/F] 조절초점이론에서 촉진 초점(promotion focus)은 손실을 최소화하려는 열망으로 동기화되며, 안전·안정·의무를 주요 가치로 삼는다.',
+   a:0, e:'설명은 예방 초점(prevention focus)에 해당합니다. 촉진 초점은 목표 성취 열망으로 동기화되며 성취·이득 극대화를 주요 가치로 삼습니다.'},
+  {t:'obj',h:true,
+   q:'균형이론(Heider)에서 소비자 A가 연예인 P를 좋아하고(+), P가 브랜드 X를 광고하며(+) 연결되어 있는데, A는 X를 싫어한다(−). 이 인지체계의 상태와 균형 회복 방법으로 옳은 것은?',
+   o:['균형 상태 — 변화 불필요','불균형 상태 — A가 X를 긍정으로 바꾸거나, P를 부정으로 바꾸거나, P-X 연결을 무효화함','불균형 상태 — A가 X에 대한 태도를 더 부정적으로 강화함','균형 상태 — 세 관계의 곱이 (−)이므로 안정적','불균형 상태 — 새로운 인물 Q를 도입해야만 해소 가능'],
+   a:1, e:'(+)×(+)×(−) = (−)이므로 불균형. 해소방법: ①관계 변경으로 곱을 (+)로 만들기 ②삼자관계 요소 대체 ③관계 무효화.'},
+  {t:'obj',h:true,
+   q:'인지부조화가 발생할 가능성이 높은 상황으로 <em>모두 옳은 것</em>을 고르시오.',
+   o:['저가품을 충동적으로 구매했을 때','고가품 구매 / 선호 대안들 특성이 매우 다를 때 / 인적 요인 개입 / 환불이 어려울 때','저관여 제품 반복 구매 / 습관적 의사결정','여러 대안이 매우 유사하여 차별성이 없을 때','구매 후 즉각적인 만족이 클 때'],
+   a:1, e:'인지부조화 발생 조건: ①고가품·이미지 제품(중요한 구매) ②선호 대안의 특성이 매우 다름 ③인적 요인(판매원 강권) 개입 ④교환·환불이 어려운 경우.'},
 
-  // ── 관여도
-  {
-    type:'obj', hard:true,
-    text:'FCB 그리드 모델의 사분면별 반응 위계와 적합 광고 전략을 <span class="highlight">잘못</span> 연결한 것은?',
-    opts:['1사분면(고관여·사고): Learn→Feel→Do — 정보 제공형 광고','2사분면(고관여·감성): Feel→Learn→Do — 감성적 이미지 광고','3사분면(저관여·사고): Do→Learn→Feel — 습관 형성·반복 노출 광고','4사분면(저관여·감성): Do→Feel→Learn — 자기만족형 광고','3사분면(저관여·사고): Learn→Feel→Do — 정보 제공형 광고'],
-    ans:4,
-    exp:'3사분면(저관여·사고)의 반응 위계는 Do→Learn→Feel입니다. Learn→Feel→Do는 1사분면(고관여·사고)에 해당합니다.'
-  },
-  {
-    type:'obj', hard:false,
-    text:'Zaichkowsky의 <span class="highlight">PII(Personal Involvement Inventory)</span>에 대한 설명으로 옳은 것은?',
-    opts:['개인적 관심, 부정적 결과의 중요성 등 5가지 차원으로 구성된다','제품의 중요성 차원을 측정하는 20개 문항으로 구성되며 7점 척도를 사용한다','관여도를 단일 문항으로 측정한다','Laurent & Kapferer가 개발한 척도이다','상표 관여도만을 측정한다'],
-    ans:1,
-    exp:'Zaichkowsky의 PII는 제품 중요성 차원을 측정하는 20개 문항으로 구성된 7점 척도입니다. 5차원 측정은 Laurent & Kapferer의 방법입니다.'
-  },
-  {
-    type:'tf', hard:true,
-    text:'[T/F] 정보과부화(information overload)는 관여도와 상관없이 정보량이 많으면 항상 발생하며, 고관여 소비자도 정보가 많으면 반드시 최선의 선택을 못한다.',
-    ans:0,
-    exp:'이영규의 연구에 따르면 정보과부화는 조건적으로 나타납니다. 고관여 소비자이고 정보처리 시간이 충분하면 정보가 많아도 과부화가 발생하지 않습니다. 시간 제약이 있을 때만 고관여도 과부화를 경험합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'관여도의 결정 요인인 <span class="highlight">소비자 요인</span>에 해당하지 않는 것은?',
-    opts:['인지 스타일','정서적 자원','육체적 자원','사회·문화적 자원','제품의 가격 수준'],
-    ans:4,
-    exp:'제품의 가격 수준은 제품 요인에 해당합니다. 소비자 요인으로는 인지 스타일, 정서적 자원, 육체적 자원, 사회·문화적 자원 등이 있습니다.'
-  },
+  // ── 관여도 (10-13)
+  {t:'obj',h:true,
+   q:'FCB 그리드 모델의 사분면별 반응 위계와 광고 전략을 <em>잘못</em> 연결한 것은?',
+   o:['1사분면(고관여·사고): Learn→Feel→Do — 정보 제공형 광고','2사분면(고관여·감성): Feel→Learn→Do — 감성적 이미지 광고','3사분면(저관여·사고): Do→Learn→Feel — 습관 형성·반복 노출 광고','4사분면(저관여·감성): Do→Feel→Learn — 자기만족형 광고','3사분면(저관여·사고): Learn→Feel→Do — 정보 제공형 광고'],
+   a:4, e:'3사분면(저관여·사고)의 반응 위계는 Do→Learn→Feel입니다. Learn→Feel→Do는 1사분면(고관여·사고)에 해당합니다.'},
+  {t:'obj',h:false,
+   q:'Zaichkowsky의 <em>PII(Personal Involvement Inventory)</em>에 대한 설명으로 옳은 것은?',
+   o:['개인적 관심·부정적 결과의 중요성 등 5가지 차원으로 구성된다','제품 중요성 차원을 측정하는 20개 문항으로 구성되며 7점 척도를 사용한다','관여도를 단일 문항으로 측정한다','Laurent & Kapferer가 개발한 척도이다','상표 관여도만을 측정한다'],
+   a:1, e:'PII는 제품 중요성을 측정하는 20문항 7점 척도입니다. 5차원 측정은 Laurent & Kapferer의 방법입니다.'},
+  {t:'tf',h:true,
+   q:'[T/F] 정보과부화(information overload)는 관여도와 무관하게 정보량이 많으면 항상 발생하며, 고관여 소비자도 정보가 많으면 반드시 최선의 선택을 못한다.',
+   a:0, e:'이영규 연구에 따르면 정보과부화는 조건적으로 발생합니다. 고관여+충분한 시간이면 많은 정보도 잘 처리합니다. 시간 제약이 있을 때만 고관여도 과부화를 경험합니다.'},
+  {t:'obj',h:true,
+   q:'관여도의 결정 요인 중 <em>소비자 요인</em>에 해당하지 않는 것은?',
+   o:['인지 스타일','정서적 자원','육체적 자원','사회·문화적 자원','제품의 가격 수준'],
+   a:4, e:'제품 가격 수준은 제품 요인에 해당합니다. 소비자 요인: 인지 스타일, 정서적 자원, 육체적 자원, 사회·문화적 자원 등입니다.'},
 
-  // ── 학습(고전·조작·관찰)
-  {
-    type:'obj', hard:true,
-    text:'고전조건화에서 <span class="highlight">잠재적 억제(latent inhibition)</span>를 올바르게 설명한 것은?',
-    opts:['조건 자극에 반복 노출되어 조건 반응이 소거되는 현상','제품에 대한 사전 경험이 많을수록 새로운 조건형성이 잘 발생하지 않는 현상','무조건 자극 없이 조건 자극만 제시할 때 점차 반응이 강해지는 현상','조건 자극이 여러 자극과 연합될 때 특정 자극과의 연합만 남는 현상','조건 자극과 유사한 자극에도 같은 반응을 보이는 현상'],
-    ans:1,
-    exp:'잠재적 억제는 제품에 대한 사전 경험이 많을수록 새로운 조건형성이 잘 일어나지 않는 현상입니다. 이미 친숙한 자극은 새로운 연합이 어렵습니다.'
-  },
-  {
-    type:'obj', hard:false,
-    text:'Milliman 연구에서 슈퍼마켓 매장 내 음악 템포와 소비자 행동의 관계에 대한 설명으로 옳은 것은?',
-    opts:['빠른 음악이 느린 음악보다 평균 매출액이 높다','느린 음악이 빠른 음악보다 평균 매출액이 높다','음악 템포와 매출액 간에는 유의미한 관계가 없다','빠른 음악이 소비자의 체류 시간을 늘린다','느린 음악은 소비자의 구매 의도를 감소시킨다'],
-    ans:1,
-    exp:'Milliman 연구에서 느린 음악(slow tempo)이 빠른 음악보다 소비자의 체류 시간과 구매량을 늘려 평균 매출액이 높게 나타났습니다. 이는 고전조건화의 직접적 행동변화 적용 사례입니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'조작조건화의 <span class="highlight">강화 유형</span>에 대한 설명으로 옳지 않은 것은?',
-    opts:['정적 강화: 특정 반응 후 긍정적 결과가 제공되어 그 반응의 발생 확률을 높인다','부적 강화: 소비자의 반응에 의해 부정적 상태가 제거될 때 반응 발생 확률이 높아진다','처벌: 특정 반응에 대해 부정적 결과를 제공하여 그 반응을 줄인다','소거: 반응 후 긍정적 결과가 더 이상 제공되지 않아 반응 확률이 줄어든다','부적 강화는 처벌과 동일한 개념으로, 행동을 감소시키기 위해 부정적 자극을 제시하는 것이다'],
-    ans:4,
-    exp:'부적 강화와 처벌은 다른 개념입니다. 부적 강화는 부정적 상태를 제거함으로써 행동을 증가시키는 것입니다. 처벌은 부정적 결과를 제시하여 행동을 감소시키는 것입니다.'
-  },
-  {
-    type:'tf', hard:true,
-    text:'[T/F] 고전조건화는 관여도가 높은 소비자에게서, 조작조건화는 관여도가 낮은 소비자에게서 더 효과적으로 작동한다.',
-    ans:0,
-    exp:'반대입니다. 고전조건화는 소비자 관여가 낮을 때 더 효과적으로 형성되며, 조작조건화도 저관여 상황에서 습관적 행동 형성에 더 적합합니다. 고관여 상황에서는 인지학습이 더 중요합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'관찰학습(모델링)에서 <span class="highlight">언어 모델링(verbal modeling)</span>의 특징과 사례로 가장 적절한 것은?',
-    opts:['소비자가 모델의 행동과 결과를 직접 보고 긍정적 보상을 지각한다 — TV 광고 모델','소비자가 특정 상황에서 모델의 행동과 결과를 상상한다 — 라디오 광고','특정 상황에서 다른 소비자들의 행동을 언어로 전달하여 반응을 유발한다 — "고객의 90%가 선택"','모델의 매력과 신뢰성이 핵심 요인이다 — 유명 연예인 광고','관찰자와 모델의 유사성이 핵심 요인이다 — 일반인 모델 광고'],
-    ans:2,
-    exp:'언어 모델링은 다른 소비자들의 행동을 언어로 말해주어 소비자의 반응을 유발하는 방식입니다(사회적 증거의 법칙). 예: "고객의 90%가 이 제품을 선택했습니다." 라디오 광고에 효과적인 것은 내재적 모델링입니다.'
-  },
-  {
-    type:'obj', hard:false,
-    text:'고전조건화의 자극 일반화(stimulus generalization)를 마케팅에 활용한 전략으로 옳지 않은 것은?',
-    opts:['제품 확장: 잘 알려진 기존 상표를 관련 제품에 사용','동일상표화: 한 회사의 다양한 제품에 동일한 기업 상표명 부착','인가(licensing): 잘 알려진 상표명을 다른 제조사에 허가','유사 포장: 후발 업체가 유명 제품을 모방한 포장 사용','변별(discrimination): 유명 상표와 유사상표를 구분하도록 독특한 점을 강조'],
-    ans:4,
-    exp:'변별(discrimination)은 자극 일반화의 반대 개념입니다. 브랜드가 경쟁사와 차별화하여 유사 자극에는 반응하지 않도록 하는 것이므로, 자극 일반화 활용 전략이 아닙니다.'
-  },
+  // ── 학습·조건화·관찰 (14-19)
+  {t:'obj',h:true,
+   q:'고전조건화에서 <em>잠재적 억제(latent inhibition)</em>를 올바르게 설명한 것은?',
+   o:['조건 자극 반복 노출로 조건 반응이 소거되는 현상','제품에 대한 사전 경험이 많을수록 새로운 조건형성이 잘 발생하지 않는 현상','무조건 자극 없이 조건 자극만 제시할 때 반응이 강해지는 현상','조건 자극이 여러 자극과 연합될 때 특정 자극만 연합이 남는 현상','조건 자극과 유사한 자극에도 같은 반응을 보이는 현상'],
+   a:1, e:'잠재적 억제: 제품에 대한 사전 경험이 많을수록 새로운 조건형성이 어렵습니다. 이미 친숙한 자극은 새로운 연합 형성이 억제됩니다.'},
+  {t:'obj',h:false,
+   q:'Milliman 연구에서 슈퍼마켓 음악 템포와 소비자 행동의 관계로 옳은 것은?',
+   o:['빠른 음악이 느린 음악보다 평균 매출액이 높다','느린 음악이 빠른 음악보다 평균 매출액이 높다','음악 템포와 매출액 간에는 유의미한 관계가 없다','빠른 음악이 소비자 체류 시간을 늘린다','느린 음악은 구매 의도를 감소시킨다'],
+   a:1, e:'Milliman: 느린 음악이 소비자의 체류 시간을 늘리고 구매량을 증가시켜 평균 매출액이 높게 나타났습니다.'},
+  {t:'obj',h:true,
+   q:'조작조건화의 <em>강화 유형</em>에 대한 설명으로 옳지 않은 것은?',
+   o:['정적 강화: 반응 후 긍정적 결과 제공 → 반응 확률 증가','부적 강화: 반응으로 부정적 상태가 제거될 때 → 반응 확률 증가','처벌: 특정 반응에 부정적 결과 제공 → 반응 확률 감소','소거: 반응 후 긍정적 결과가 더 이상 없을 때 → 반응 확률 감소','부적 강화는 처벌과 동일한 개념으로 행동을 감소시키기 위해 부정적 자극을 제시하는 것이다'],
+   a:4, e:'부적 강화 ≠ 처벌. 부적 강화는 부정적 상태를 제거함으로써 행동을 증가시킵니다. 처벌은 부정적 결과를 제시해 행동을 감소시킵니다.'},
+  {t:'tf',h:true,
+   q:'[T/F] 고전조건화는 관여도가 높은 소비자에게서, 조작조건화는 관여도가 낮은 소비자에게서 더 효과적으로 작동한다.',
+   a:0, e:'반대입니다. 고전조건화는 소비자 관여가 낮을 때 더 효과적으로 형성됩니다. 고관여 상황에서는 인지학습이 더 중요합니다.'},
+  {t:'obj',h:true,
+   q:'관찰학습(모델링)에서 <em>언어 모델링(verbal modeling)</em>의 특징과 사례로 가장 적절한 것은?',
+   o:['소비자가 모델의 행동과 결과를 직접 보고 긍정적 보상을 지각한다 — TV 광고','소비자가 모델의 행동과 결과를 상상한다 — 라디오 광고','다른 소비자들의 행동을 언어로 전달하여 반응을 유발한다 — "고객의 90%가 선택"','모델의 매력·신뢰성이 핵심 — 유명 연예인 광고','관찰자와 모델의 유사성이 핵심 — 일반인 모델 광고'],
+   a:2, e:'언어 모델링은 다른 소비자들의 행동을 언어로 전달(사회적 증거)하여 반응을 유발합니다. "고객의 90%가 이 제품을 선택했습니다"가 전형적 사례입니다.'},
+  {t:'obj',h:false,
+   q:'고전조건화의 자극 일반화(stimulus generalization)를 마케팅에 활용한 전략으로 옳지 않은 것은?',
+   o:['제품 확장: 기존 상표를 관련 제품에 사용','동일상표화: 다양한 제품에 동일한 기업 상표명 부착','인가(licensing): 상표명을 다른 제조사에 허가','유사 포장: 후발 업체가 유명 제품 포장을 모방','변별(discrimination): 유사상표와 구분되도록 독특한 점 강조'],
+   a:4, e:'변별(discrimination)은 자극 일반화의 반대 개념으로, 자사 브랜드를 경쟁사와 차별화하는 것입니다. 자극 일반화 활용 전략이 아닙니다.'},
 
-  // ── 기억구조
-  {
-    type:'obj', hard:true,
-    text:'다중기억모형에서 <span class="highlight">단기기억</span>에서 <span class="highlight">장기기억</span>으로 정보가 전이되기 위해 필요한 시간이 올바르게 짝지어진 것은?',
-    opts:['재인 목적: 약 10초 / 회상 목적: 약 20초','재인 목적: 약 2~5초 / 회상 목적: 약 5~10초','재인 목적: 약 0.5초 / 회상 목적: 약 2~3초','재인 목적: 약 30초 / 회상 목적: 약 60초','재인과 회상 모두 약 7초가 필요하다'],
-    ans:1,
-    exp:'재인(recognition)이 목표인 경우 약 2~5초, 회상(recall)이 목표인 경우 약 5~10초의 정보처리 시간이 요구됩니다. 상대적으로 회상은 더 많은 리허설을 필요로 합니다.'
-  },
-  {
-    type:'tf', hard:false,
-    text:'[T/F] 선입정보방해(순행간섭, proactive interference)는 과거에 저장된 정보가 최근에 저장된 정보의 인출을 방해하는 현상이며, 역행간섭과는 반대 방향의 간섭이다.',
-    ans:1,
-    exp:'옳습니다. 선입정보방해(순행간섭)는 과거→현재 방향으로 방해하고, 후입정보방해(역행간섭)는 최근→과거 방향으로 방해합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'장기기억의 <span class="highlight">의미망 모델(semantic network model)</span>에서 활성화의 확산(spreading activation)이 잘 일어나는 조건으로 옳은 것은?',
-    opts:['노드 간 관련성이 낮고 연결고리(link)가 길수록','노드 간 관련성이 높고 연결고리가 짧으며, 링크가 강하게 형성될수록','노드의 수가 적을수록','개념들이 서로 독립적으로 분리되어 있을수록','장기기억에 저장된 정보의 총량이 많을수록'],
-    ans:1,
-    exp:'활성화의 확산은 ①관련성이 높고 노드가 가까울수록 ②연결고리가 짧을수록 ③링크가 강하게 형성될수록 하나의 노드가 활성화될 때 인접 노드가 활성화될 가능성이 높습니다.'
-  },
-  {
-    type:'obj', hard:false,
-    text:'다음 중 <span class="highlight">초두효과(primacy effect)</span>와 <span class="highlight">최신효과(recency effect)</span>에 대한 설명으로 옳지 않은 것은?',
-    opts:['초두효과는 정보 목록의 첫 부분에 제시된 자극이 더 잘 기억되는 현상이다','최신효과는 정보 목록의 마지막에 제시된 자극이 더 잘 기억되는 현상이다','정보 노출 직후 즉시 측정하면 최신효과가 강하게 나타나는 경향이 있다','초두효과는 광고가 제시되는 맥락 특성 중 처음 본 광고와 관련된다','초두효과는 노출 후 바로 시험을 볼 때 가장 강하게 나타난다'],
-    ans:4,
-    exp:'초두효과는 노출 후 시간이 지난 뒤 측정할 때 더 강하게 나타납니다. 노출 직후 즉시 측정하면 최신효과(마지막 자극)가 강합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'부호화 특수성 원리(encoding specificity principle)에 기반한 <span class="highlight">인출 단서(retrieval cue)</span>의 활용 사례로 가장 적절한 것은?',
-    opts:['TV광고를 자주 반복하여 브랜드 인지도를 높인다','정보를 그림과 언어를 함께 사용하여 이중부호화한다','구매 시점 전시(POP) 광고로 해당 브랜드 광고를 회상하도록 유도한다','소비자에게 충격적인 장면을 사용하여 주의를 끈다','가격 인하를 통해 구매 빈도를 높인다'],
-    ans:2,
-    exp:'부호화 특수성 원리에 따르면, 저장 시점의 단서가 인출 시점에도 제공될 때 인출이 잘됩니다. 구매 시점(POP) 광고는 광고 노출 당시 함께 저장된 단서를 제공해 브랜드 정보 인출을 돕는 전형적 사례입니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'장기기억에서 <span class="highlight">절차기억(procedural memory)</span>에 해당하는 사례로 가장 적절한 것은?',
-    opts:['처음 자동차를 구매했던 날의 기억','애플 로고를 보면 "혁신"이라는 개념이 떠오르는 것','어린 시절 가족과 함께 간 여행의 구체적 기억','오래 운전하다 보면 생각 없이 자동으로 페달을 밟게 되는 것','특정 브랜드에 대해 형성된 호의적 태도'],
-    ans:3,
-    exp:'절차기억(procedural memory)은 특정 행동을 어떻게 수행하는지에 대한 과정을 기억하는 것으로, 자동화된 행동(운전, 자전거 타기 등)이 대표적입니다. 일화기억은 ①③, 의미기억은 ②⑤입니다.'
-  },
-  {
-    type:'tf', hard:true,
-    text:'[T/F] 비교광고(comparative advertising)는 특정 경쟁 브랜드를 언급함으로써 부분목록 단서효과에 의해 그 브랜드 외의 모든 경쟁 브랜드들에 대한 기억을 억제하는 효과가 있다.',
-    ans:1,
-    exp:'옳습니다. 부분목록 단서효과에 따르면 특정 브랜드를 언급하면 나머지 경쟁 브랜드들은 오히려 기억에서 떠오르지 않게 됩니다. 비교광고는 이 효과를 전략적으로 활용합니다.'
-  },
+  // ── 기억구조 (20-26)
+  {t:'obj',h:true,
+   q:'다중기억모형에서 <em>단기기억 → 장기기억</em> 전이에 필요한 시간이 올바르게 짝지어진 것은?',
+   o:['재인 목적: 약 10초 / 회상 목적: 약 20초','재인 목적: 약 2~5초 / 회상 목적: 약 5~10초','재인 목적: 약 0.5초 / 회상 목적: 약 2~3초','재인 목적: 약 30초 / 회상 목적: 약 60초','재인·회상 모두 약 7초'],
+   a:1, e:'재인(recognition) 목적: 약 2~5초 / 회상(recall) 목적: 약 5~10초. 회상은 재인보다 더 많은 리허설이 필요합니다.'},
+  {t:'tf',h:false,
+   q:'[T/F] 선입정보방해(순행간섭, proactive interference)는 과거에 저장된 정보가 최근 저장된 정보의 인출을 방해하는 현상이며, 역행간섭(후입정보방해)과는 반대 방향이다.',
+   a:1, e:'옳습니다. 순행간섭(과거→현재 방향 방해) vs 역행간섭(최근→과거 방향 방해).'},
+  {t:'obj',h:true,
+   q:'장기기억의 <em>의미망 모델</em>에서 활성화의 확산(spreading activation)이 잘 일어나는 조건으로 옳은 것은?',
+   o:['노드 간 관련성이 낮고 연결고리가 길수록','노드 간 관련성이 높고 연결고리가 짧으며, 링크가 강하게 형성될수록','노드의 수가 적을수록','개념들이 서로 독립적으로 분리될수록','장기기억에 저장된 정보 총량이 많을수록'],
+   a:1, e:'활성화 확산은 ①관련성 높고 노드가 가까울수록 ②연결고리 짧을수록 ③링크가 강하게 형성될수록 더 잘 일어납니다.'},
+  {t:'obj',h:false,
+   q:'<em>초두효과(primacy effect)</em>와 <em>최신효과(recency effect)</em>에 대한 설명으로 옳지 않은 것은?',
+   o:['초두효과: 목록 첫 부분에 제시된 자극이 더 잘 기억되는 현상','최신효과: 목록 마지막에 제시된 자극이 더 잘 기억되는 현상','정보 노출 직후 즉시 측정하면 최신효과가 강하게 나타나는 경향이 있다','초두효과는 처음 본 광고와 관련된다','초두효과는 노출 직후 바로 시험을 볼 때 가장 강하게 나타난다'],
+   a:4, e:'초두효과는 시간이 지난 후 측정할 때 강하게 나타납니다. 노출 직후 측정 시에는 최신효과가 강합니다.'},
+  {t:'obj',h:true,
+   q:'부호화 특수성 원리(encoding specificity principle)에 기반한 <em>인출 단서(retrieval cue)</em> 활용 사례로 가장 적절한 것은?',
+   o:['TV광고를 자주 반복하여 인지도를 높인다','그림과 언어를 함께 사용하여 이중부호화한다','구매 시점 전시(POP) 광고로 해당 브랜드 광고를 회상하도록 유도한다','충격적인 장면으로 주의를 끈다','가격 인하로 구매 빈도를 높인다'],
+   a:2, e:'부호화 특수성 원리: 저장 시점의 단서가 인출 시점에도 제공될 때 인출이 잘됩니다. POP 광고가 광고 정보 인출 단서로 작용하는 전형적 사례입니다.'},
+  {t:'obj',h:true,
+   q:'장기기억에서 <em>절차기억(procedural memory)</em>에 해당하는 사례로 가장 적절한 것은?',
+   o:['처음 자동차를 구매했던 날의 기억','애플 로고를 보면 "혁신"이라는 개념이 떠오르는 것','어린 시절 가족 여행의 구체적 기억','오래 운전하다 보면 생각 없이 자동으로 페달을 밟게 되는 것','특정 브랜드에 형성된 호의적 태도'],
+   a:3, e:'절차기억은 특정 행동의 수행 과정을 기억하는 것으로, 자동화된 행동(운전, 자전거 등)이 대표적입니다. 일화기억=①③, 의미기억=②⑤.'},
+  {t:'tf',h:true,
+   q:'[T/F] 비교광고(comparative advertising)는 특정 경쟁 브랜드를 언급함으로써 부분목록 단서효과에 의해 그 브랜드 외의 모든 경쟁 브랜드들에 대한 기억을 억제하는 효과가 있다.',
+   a:1, e:'옳습니다. 부분목록 단서효과: 일부 브랜드만 제시하면 나머지 경쟁 브랜드들은 오히려 기억에서 떠오르지 않습니다. 비교광고는 이를 전략적으로 활용합니다.'},
 
-  // ── 감정
-  {
-    type:'obj', hard:true,
-    text:'플루칙(Plutchik)의 다차원적 정서모형에서 <span class="highlight">혼합 정서(blended emotions)</span>의 사례로 옳은 것은?',
-    opts:['분노 = 혐오 + 기대','사랑 = 기쁨 + 신뢰','공포 = 슬픔 + 놀라움','경멸 = 분노 + 혐오','낙관 = 기쁨 + 공포'],
-    ans:1,
-    exp:'플루칙의 혼합 정서에서 사랑(Love) = 기쁨(Joy) + 신뢰(Trust)입니다. 이는 교재에 명시된 사례입니다.'
-  },
-  {
-    type:'obj', hard:false,
-    text:'무어와 허친슨(Moore & Hutchinson)의 연구에 따르면 광고에서 부정적 감정을 유발할 때 효과에 대한 설명으로 옳은 것은?',
-    opts:['부정적 감정은 처음부터 긍정적 감정과 동일한 효과를 낸다','부정적 감정은 처음에 부정적 효과를 내지만 시간이 지나면서 긍정적 감정에 가까운 효과를 발휘한다','부정적 감정을 유발하는 광고는 항상 피해야 한다','소비자가 광고에서 아무런 감정도 느끼지 않는 것이 부정적 감정보다 항상 더 효과적이다','부정적 감정은 브랜드 태도에 영구적으로 부정적인 영향을 미친다'],
-    ans:1,
-    exp:'무어와 허친슨 연구: 부정적 감정은 처음에는 부정적 효과를 내지만, 시간이 지나면서 회복되어 긍정적 감정과 비슷한 정도의 효과를 발휘합니다. 즉, 아무 감정도 없는 광고보다 효과적입니다.'
-  },
-  {
-    type:'tf', hard:true,
-    text:'[T/F] 에크먼(Ekman)은 기본 감정 6가지가 문화를 초월하여 생리적으로 공통 발생하며, 특히 얼굴 근육의 좌우 각각 42개 근육 움직임의 조합으로 표현된다고 주장했다.',
-    ans:1,
-    exp:'옳습니다. 에크먼의 연구에 따르면 기본 6감정(분노, 놀람, 혐오, 행복, 공포, 슬픔)은 인종·문화를 초월한 보편적 생리 반응이며, 얼굴 좌우 각 42개 근육의 미세한 움직임 조합으로 나타납니다. 이는 감정인식 기술의 토대가 되었습니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'다음 중 감정 반응의 유형을 강도 순서(강→약)로 올바르게 나열한 것은?',
-    opts:['정서 → 느낌 → 분위기/기분 → 평가','평가 → 정서 → 느낌 → 분위기/기분','정서 → 분위기/기분 → 느낌 → 평가','느낌 → 정서 → 분위기/기분 → 평가','분위기/기분 → 느낌 → 정서 → 평가'],
-    ans:0,
-    exp:'강도 순서: 정서(기쁨·공포 등 강렬한 주관적 감정) → 느낌(정서보다 약한 생리반응: 따뜻함, 슬픔 등) → 분위기/기분(강도 낮고 각성 거의 없음) → 평가(가장 약한 감정, 대상에 대한 태도·호의도).'
-  },
-  {
-    type:'obj', hard:true,
-    text:'체화된 인지(embodied cognition)의 핵심 개념과 관련된 실험 및 연구로 <span class="highlight">옳지 않은 것</span>은?',
-    opts:['William & Bargh — 따뜻한/차가운 커피를 쥐게 하면 타인 평가에 영향을 미침','Harlow의 새끼 원숭이 연구 — 신체적 접촉의 따뜻함이 애착 형성에 영향','Huang — 따뜻한 온도가 친밀감과 순응도에 영향을 미침','Bowlby — 영아의 신체적 접촉과 애착 형성의 관계','Fitzsimmons — 애플 로고를 본 집단이 IBM 로고 집단보다 더 창의적 과제 성과를 보임'],
-    ans:4,
-    exp:'Fitzsimmons의 실험(애플 사과 로고 vs 로고 X 집단)은 의미망 모델의 프라이밍 효과를 설명하는 사례입니다. 애플 로고가 창의성 노드를 활성화시킨다는 연구로, 체화된 인지보다는 개념적 프라이밍에 해당합니다.'
-  },
-  {
-    type:'obj', hard:false,
-    text:'광고태도(Aad)와 브랜드태도(Ab)의 관계를 설명한 것으로 가장 옳은 것은?',
-    opts:['광고태도는 브랜드태도에 영향을 주지 않는다','브랜드태도가 형성된 후에만 광고태도가 생긴다','소비자가 광고를 좋아할수록(긍정적 광고태도) 해당 브랜드에 대해서도 호의적 태도를 가질 가능성이 높다','광고태도와 브랜드태도는 완전히 독립적이다','브랜드태도는 오직 제품 품질 경험에 의해서만 형성된다'],
-    ans:2,
-    exp:'광고태도(광고 자체에 대한 호감)는 브랜드태도에 영향을 미칩니다. 예: 김연아를 좋아하면(모델에 호감) → 광고를 좋아하게 됨 → 브랜드에 호의적 태도 형성. 균형이론 기반으로도 설명됩니다.'
-  },
+  // ── 감정 (27-32)
+  {t:'obj',h:true,
+   q:'플루칙(Plutchik)의 다차원적 정서모형에서 <em>혼합 정서(blended emotions)</em>의 사례로 옳은 것은?',
+   o:['분노 = 혐오 + 기대','사랑 = 기쁨 + 신뢰','공포 = 슬픔 + 놀라움','경멸 = 분노 + 혐오','낙관 = 기쁨 + 공포'],
+   a:1, e:'플루칙의 혼합 정서: 사랑(Love) = 기쁨(Joy) + 신뢰(Trust). 교재에 명시된 사례입니다.'},
+  {t:'obj',h:false,
+   q:'무어와 허친슨(Moore & Hutchinson) 연구에서 광고의 부정적 감정 유발 효과에 대한 설명으로 옳은 것은?',
+   o:['부정적 감정은 처음부터 긍정적 감정과 동일한 효과를 낸다','부정적 감정은 처음에 부정적 효과를 내지만 시간이 지나면서 긍정적 감정에 가까운 효과를 발휘한다','부정적 감정 유발 광고는 항상 피해야 한다','아무런 감정도 느끼지 않는 것이 부정적 감정보다 항상 더 효과적이다','부정적 감정은 브랜드 태도에 영구적으로 부정적 영향을 미친다'],
+   a:1, e:'무어·허친슨: 부정적 감정은 처음엔 부정적이나 시간이 지나면서 회복되어 긍정적 감정과 비슷한 효과를 냅니다. 즉, 감정이 없는 광고보다 효과적입니다.'},
+  {t:'tf',h:true,
+   q:'[T/F] 에크먼(Ekman)은 기본 감정 6가지가 문화를 초월하여 생리적으로 공통 발생하며, 얼굴 근육(좌우 각각 42개)의 미세한 움직임 조합으로 표현된다고 주장했다.',
+   a:1, e:'옳습니다. 에크먼의 기본 6감정(분노·놀람·혐오·행복·공포·슬픔)은 문화를 초월한 보편적 반응이며, 얼굴 좌우 각 42개 근육의 조합으로 나타납니다. 감정인식 기술의 토대입니다.'},
+  {t:'obj',h:true,
+   q:'감정 반응의 유형을 <em>강도 순서(강→약)</em>로 올바르게 나열한 것은?',
+   o:['정서 → 느낌 → 분위기/기분 → 평가','평가 → 정서 → 느낌 → 분위기/기분','정서 → 분위기/기분 → 느낌 → 평가','느낌 → 정서 → 분위기/기분 → 평가','분위기/기분 → 느낌 → 정서 → 평가'],
+   a:0, e:'강도 순: 정서(기쁨·공포 등, 강렬한 주관적 감정) → 느낌(다소 약한 생리반응: 따뜻함·슬픔) → 분위기/기분(강도 낮음) → 평가(가장 약한 감정, 태도·호의도).'},
+  {t:'obj',h:true,
+   q:'체화된 인지(embodied cognition)와 관련된 연구로 <em>옳지 않은 것</em>은?',
+   o:['William & Bargh — 따뜻한/차가운 커피를 쥐게 하면 타인 평가에 영향','Harlow — 새끼 원숭이 신체적 접촉과 애착 형성','Huang — 따뜻한 온도가 친밀감·순응도에 영향','Bowlby — 영아의 신체적 접촉과 애착 형성','Fitzsimmons — 애플 로고를 본 집단이 IBM 로고 집단보다 창의적 과제 성과가 높음'],
+   a:4, e:'Fitzsimmons의 연구는 의미망 모델의 프라이밍 효과 사례입니다. 체화된 인지가 아닌 개념적 프라이밍(애플 로고 → 창의성 노드 활성화)에 해당합니다.'},
+  {t:'obj',h:false,
+   q:'광고태도(Aad)와 브랜드태도(Ab)의 관계를 설명한 것으로 가장 옳은 것은?',
+   o:['광고태도는 브랜드태도에 영향을 주지 않는다','브랜드태도가 형성된 후에만 광고태도가 생긴다','소비자가 광고를 좋아할수록 해당 브랜드에도 호의적 태도를 가질 가능성이 높다','광고태도와 브랜드태도는 완전히 독립적이다','브랜드태도는 오직 제품 품질 경험에 의해서만 형성된다'],
+   a:2, e:'광고태도 → 브랜드태도로 영향. 예: 김연아 호감 → 광고 호감 → 브랜드 호의적 태도. 균형이론으로도 설명됩니다.'},
 
-  // ── 심화·통합 문제
-  {
-    type:'obj', hard:true,
-    text:'다음 광고 사례를 분석하여 가장 적합한 개념을 고르시오.<br><br><em>"A 화장품 브랜드는 행복한 가족이 등장하는 따뜻한 영상 광고를 방영하기 위해, 행복·감동 스토리의 드라마 방영 직후 시간대를 구매했다."</em>',
-    opts:['체화된 인지','감정일치가설 — 드라마 시청 중 형성된 긍정적 감정이 광고 정보처리에 긍정적 영향을 줌','고전조건화 — 드라마가 무조건자극, 광고가 조건자극','부호화 특수성 원리','FCB 그리드 1사분면 전략'],
-    ans:1,
-    exp:'감정일치가설에 따르면 특정 광고 노출 이전의 소비자 감정 상태가 해당 광고의 정보처리에 영향을 미칩니다. 따뜻한 드라마를 본 후 형성된 긍정적 감정이 뒤이어 나오는 광고의 처리에도 긍정적으로 영향을 줍니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'다음 사례에서 작동하는 학습 원리와 가장 부합하는 설명을 고르시오.<br><br><em>"B 편의점은 앱 쿠폰을 통해 첫 구매 고객에게 무료 음료를 제공하고, 이후 방문할 때마다 스탬프를 적립하여 10회 적립 시 무료 커피를 증정한다."</em>',
-    opts:['고전조건화 — 무료 음료가 무조건자극으로 작동한다','조작조건화 — 조형(shaping)의 원리로 구매 행동을 단계적으로 강화한다','관찰학습 — 다른 소비자들이 스탬프를 모으는 것을 보고 따라한다','인지부조화 — 첫 구매 후 발생하는 부조화를 쿠폰으로 해소한다','균형이론 — 편의점과 소비자 간 긍정적 관계를 형성한다'],
-    ans:1,
-    exp:'이 사례는 조작조건화의 조형(shaping) 원리입니다. 첫 구매(무료 제공으로 행동 유도) → 스탬프 적립(중간 단계 강화) → 무료 커피(최종 강화)로 최종 행동인 반복 구매에 이르기까지 부분 행동들을 연속 강화합니다.'
-  },
-  {
-    type:'tf', hard:true,
-    text:'[T/F] 기억의 의미망 모델에서, 소비자가 "삼성"이라는 브랜드를 떠올릴 때 "갤럭시", "혁신", "한국" 등의 개념이 함께 활성화되는 것은 활성화의 확산(spreading activation)으로 설명할 수 있으며, 마케터는 자사 브랜드 노드와 긍정적 개념 노드 간 링크를 강화하는 것이 중요하다.',
-    ans:1,
-    exp:'옳습니다. 의미망 모델에서 한 노드가 활성화되면 연결된 인접 노드들도 활성화됩니다(활성화의 확산). 따라서 광고는 브랜드 노드와 긍정적 개념(품질, 신뢰 등) 노드 간 강한 링크를 형성하는 것이 중요합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'다음 중 소비자가 제품을 지각할 때 일어나는 <span class="highlight">지각적 추론</span>의 유형과 그 사례가 올바르게 짝지어진 것은?',
-    opts:['유사성에 의한 추론 — 특정 상표에 긍정적 태도가 있어 그 브랜드의 새 제품도 좋게 평가','평가에 의한 추론 — 새로운 디지털 카메라를 처음 나왔을 때 필름카메라로 분류','상관관계에 의한 추론 — 가격이 높으면 품질도 높을 것이라고 추론','범주화에 의한 추론 — 코카콜라의 빨간색으로 탄산음료를 연상','전형성에 의한 추론 — 카푸치노를 보고 크림 구름을 연상'],
-    ans:2,
-    exp:'상관관계에 의한 추론은 어떤 특성 간 상관관계에 의해 추론하는 것으로, "비싸면 좋을 것"이라는 가격-품질 추론이 대표적입니다. 평가에 의한 추론은 ①, 유사성에 의한 추론은 ②(필름카메라로 분류)에 해당합니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'<span class="highlight">귀인이론(attribution theory)</span>에서 와이너(Weiner)가 제시한 귀인의 세 가지 차원에 해당하지 않는 것은?',
-    opts:['원인의 소재(내부 vs 외부)','안정성(안정적 vs 불안정적)','통제성(통제 가능 vs 불가능)','사회성(개인 vs 집단)','위 세 가지 차원이 모두 포함됨'],
-    ans:3,
-    exp:'와이너의 귀인이론에서 세 가지 차원은 원인의 소재(내부/외부), 안정성(안정적/불안정적), 통제성(통제가능/불가능)입니다. "사회성"은 와이너의 차원에 포함되지 않습니다.'
-  },
-  {
-    type:'tf', hard:true,
-    text:'[T/F] 선택적 노출(selective exposure)은 소비자가 이미 알고 있는 정보나 자신과 관련 없다고 생각하는 자극은 피하는 경향으로, 이는 소비자의 처리 용량이 제한되어 있기 때문이다.',
-    ans:1,
-    exp:'옳습니다. 선택적 노출은 소비자의 처리 용량 한계로 인해 발생하며, 기존 신념이나 관련성 없는 정보를 회피합니다. 이를 극복하기 위해 마케터는 소비자의 접점에서 의도적 노출과 우연적 노출 기회를 높여야 합니다.'
-  },
-
-  // ── 최고난도 통합
-  {
-    type:'obj', hard:true,
-    text:'다음 중 <span class="highlight">단기기억의 청각 부호화 우위성</span>이 마케팅에 주는 시사점으로 가장 적절한 것은?',
-    opts:['TV광고는 시각 정보만 활용해야 한다','초기 단계에서 청각적 특징을 잘 활용하면 단기기억에서의 정보 생존 확률을 높일 수 있다','소비자에게 가능한 한 많은 시각 정보를 제공해야 한다','청각 정보는 장기기억으로 직접 전이되므로 별도 반복이 필요 없다','광고에서 음악을 사용하면 오히려 브랜드 정보 처리를 방해한다'],
-    ans:1,
-    exp:'단기기억에서 부호화는 주로 청각적으로 이루어집니다. 즉, 시각 정보도 청각 정보로 변환하여 처리합니다. 따라서 기억의 초기 단계에서 청각적 특징(징글, 브랜드명 발음 등)을 잘 활용하면 단기기억에서 정보가 생존할 확률이 높아집니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'다음 중 <span class="highlight">소비자 동기, 관여도, 정보처리</span>의 관계를 종합적으로 설명한 것으로 가장 옳은 것은?',
-    opts:['동기가 높을수록 관여도가 낮아지고 정보처리가 피상적이다','동기는 고-노력 행동을 유발하며, 이는 높은 관여도로 이어져 정보를 비판적으로 평가하고 기억하려는 노력을 증가시킨다','관여도는 동기와 독립적으로 결정되며, 오직 제품 가격에 의해서만 결정된다','저관여 상태에서도 소비자는 항상 정보를 비판적으로 평가한다','동기는 행동의 방향만 결정하고 강도와 지속성에는 영향을 미치지 않는다'],
-    ans:1,
-    exp:'동기는 목표와 일치된 고-노력 행동을 유발하며(시간·에너지 기꺼이 투자), 이는 감지된 관여도를 높이고, 고-노력 정보처리(주의·이해·비판적 평가·기억 노력)로 이어집니다. 동기, 관여도, 정보처리는 긴밀히 연결됩니다.'
-  },
-  {
-    type:'obj', hard:true,
-    text:'다음 사례에서 작동하는 심리적 원리를 가장 포괄적으로 설명한 것을 고르시오.<br><br><em>"명품 브랜드 C는 매장 내에 고급스러운 향기를 사용하고, 부드러운 촉감의 쇼핑백을 제공하며, 클래식 피아노 음악을 틀어 전반적으로 럭셔리한 분위기를 조성한다."</em>',
-    opts:['FCB 그리드 2사분면(고관여·감성) 전략만 활용','조작조건화의 정적 강화만 작동','감각 마케팅 — 시각·청각·후각·촉각 등 복수의 감각을 동시에 활용하여 브랜드 연상과 구매행동에 영향을 미침','관찰학습 — 다른 소비자의 구매 행동을 모방','인지부조화 — 고가 구매 후 불안을 해소하는 전략'],
-    ans:2,
-    exp:'이 사례는 다양한 감각 채널(후각·촉각·청각)을 동시에 활용하는 감각 마케팅(sensory marketing)의 전형입니다. 향기(후각), 쇼핑백(촉각), 음악(청각)이 결합되어 럭셔리 브랜드 연상을 강화하고 감각 상호작용 효과를 활용합니다.'
-  }
+  // ── 심화·통합 (33-39)
+  {t:'obj',h:true,
+   q:'다음 광고 사례에서 가장 적합한 개념을 고르시오.<span class="case">"A 화장품 브랜드는 행복한 가족이 등장하는 광고를 방영하기 위해, 행복·감동 스토리의 드라마 방영 직후 시간대를 구매했다."</span>',
+   o:['체화된 인지','감정일치가설 — 드라마로 형성된 긍정적 감정이 광고 정보처리에 긍정적 영향을 줌','고전조건화 — 드라마가 무조건자극, 광고가 조건자극','부호화 특수성 원리','FCB 그리드 1사분면 전략'],
+   a:1, e:'감정일치가설: 광고 노출 이전 소비자의 감정 상태가 광고 정보처리에 영향을 미칩니다. 따뜻한 드라마 후 형성된 긍정적 감정이 뒤이어 나오는 광고에도 긍정적 영향을 줍니다.'},
+  {t:'obj',h:true,
+   q:'다음 사례에서 작동하는 학습 원리를 고르시오.<span class="case">"B 편의점은 앱 쿠폰으로 첫 구매 고객에게 무료 음료를 제공하고, 이후 방문마다 스탬프를 적립하여 10회 적립 시 무료 커피를 증정한다."</span>',
+   o:['고전조건화 — 무료 음료가 무조건자극으로 작동','조작조건화 — 조형(shaping)의 원리로 구매 행동을 단계적으로 강화','관찰학습 — 다른 소비자의 스탬프 모으기를 보고 따라함','인지부조화 — 첫 구매 후 부조화를 쿠폰으로 해소','균형이론 — 편의점과 소비자 간 긍정적 관계 형성'],
+   a:1, e:'조작조건화의 조형(shaping): 첫 구매(무료로 행동 유도) → 스탬프 적립(중간 강화) → 무료 커피(최종 강화). 목표 행동까지 부분 행동들을 연속 강화합니다.'},
+  {t:'tf',h:true,
+   q:'[T/F] 기억의 의미망 모델에서, "삼성"을 떠올릴 때 "갤럭시", "혁신", "한국" 등이 함께 활성화되는 것은 활성화의 확산(spreading activation)으로 설명할 수 있으며, 마케터는 브랜드 노드와 긍정적 개념 노드 간 링크를 강화하는 것이 중요하다.',
+   a:1, e:'옳습니다. 의미망에서 한 노드 활성화 시 연결된 인접 노드도 활성화됩니다. 광고는 브랜드-긍정 개념(신뢰·품질) 노드 간 강한 링크 형성이 핵심입니다.'},
+  {t:'obj',h:true,
+   q:'<em>지각적 추론</em>의 유형과 사례가 올바르게 짝지어진 것은?',
+   o:['유사성에 의한 추론 — 특정 상표에 긍정적 태도가 있어 새 제품도 좋게 평가','평가에 의한 추론 — 디지털 카메라를 처음 나왔을 때 필름카메라로 분류','상관관계에 의한 추론 — 가격이 높으면 품질도 높을 것이라고 추론','범주화에 의한 추론 — 코카콜라 빨간색으로 탄산음료를 연상','전형성에 의한 추론 — 카푸치노를 보고 크림 구름을 연상'],
+   a:2, e:'"비싸면 좋을 것"이라는 가격-품질 추론이 상관관계에 의한 추론의 대표 사례입니다. 평가에 의한 추론=①, 유사성에 의한 추론=②입니다.'},
+  {t:'obj',h:true,
+   q:'귀인이론(attribution theory)에서 와이너(Weiner)가 제시한 귀인의 세 가지 차원에 해당하지 않는 것은?',
+   o:['원인의 소재(내부 vs 외부)','안정성(안정적 vs 불안정적)','통제성(통제 가능 vs 불가능)','사회성(개인 vs 집단)','위 세 차원이 모두 포함됨'],
+   a:3, e:'와이너의 귀인 3차원: 원인 소재(내부/외부), 안정성(안정적/불안정), 통제성(가능/불가능). "사회성"은 포함되지 않습니다.'},
+  {t:'obj',h:true,
+   q:'<em>단기기억의 청각 부호화 우위성</em>이 마케팅에 주는 시사점으로 가장 적절한 것은?',
+   o:['TV광고는 시각 정보만 활용해야 한다','초기 단계에서 청각적 특징을 잘 활용하면 단기기억에서의 정보 생존 확률을 높일 수 있다','가능한 한 많은 시각 정보를 제공해야 한다','청각 정보는 장기기억으로 직접 전이되므로 별도 반복이 불필요하다','광고에서 음악 사용은 브랜드 정보 처리를 방해한다'],
+   a:1, e:'단기기억에서 부호화는 주로 청각적으로 이루어집니다(시각 정보도 청각으로 변환). 따라서 징글·브랜드명 발음 등 청각적 특징 활용이 단기기억 정보 생존에 유리합니다.'},
+  {t:'obj',h:true,
+   q:'다음 사례에서 작동하는 심리적 원리를 가장 포괄적으로 설명한 것을 고르시오.<span class="case">"명품 브랜드 C는 매장 내에 고급스러운 향기를 사용하고, 부드러운 촉감의 쇼핑백을 제공하며, 클래식 피아노 음악을 틀어 럭셔리한 분위기를 조성한다."</span>',
+   o:['FCB 그리드 2사분면(고관여·감성) 전략만 활용','조작조건화의 정적 강화만 작동','감각 마케팅 — 후각·촉각·청각 복수 감각을 동시에 활용하여 브랜드 연상과 구매행동에 영향을 미침','관찰학습 — 다른 소비자의 구매 행동을 모방','인지부조화 — 고가 구매 후 불안 해소 전략'],
+   a:2, e:'향기(후각)+쇼핑백(촉각)+음악(청각)을 결합한 감각 마케팅(sensory marketing)의 전형입니다. 감각 상호작용 효과로 럭셔리 브랜드 연상을 강화합니다.'}
 ];
 
-// ── State
-let score = 0;
-let answered = new Set();
+const SECS={
+  '감각 · 지각 · 주의':[0,1,2,3,4],
+  '동기이론':[5,6,7,8,9],
+  '관여도':[10,11,12,13],
+  '학습 — 조건화 & 관찰':[14,15,16,17,18,19],
+  '기억 구조':[20,21,22,23,24,25,26],
+  '감정':[27,28,29,30,31,32],
+  '심화 · 통합':[33,34,35,36,37,38,39]
+};
 
-function startQuiz() {
-  document.getElementById('intro').classList.remove('active');
-  document.getElementById('quiz-screen').classList.add('active');
-  buildQuestions();
+let score=0, done=new Set();
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
 }
 
-function buildQuestions() {
-  const area = document.getElementById('questions-area');
-  const sections = {
-    '감각 · 지각 · 주의': [0,1,2,3,4],
-    '동기이론': [5,6,7,8,9],
-    '관여도': [10,11,12,13],
-    '학습 — 조건화 & 관찰': [14,15,16,17,18,19],
-    '기억 구조': [20,21,22,23,24,25,26],
-    '감정': [27,28,29,30,31,32],
-    '심화 · 통합': [33,34,35,36,37,38,39]
-  };
+function startQuiz(){
+  show('quiz');
+  buildQ();
+}
 
-  let html = '';
-  Object.entries(sections).forEach(([title, indices]) => {
-    html += `
-      <div class="deco-divider">
-        <div class="deco-line"></div>
-        <div class="deco-diamond"></div>
-      </div>
-      <div class="section-divider">
-        <div class="section-divider-line"></div>
-        <span class="section-divider-label">${title}</span>
-        <div class="section-divider-line"></div>
-      </div>
-    `;
-    indices.forEach(i => {
-      const q = QS[i];
-      html += buildCard(q, i);
-    });
+function buildQ(){
+  const area=document.getElementById('qarea');
+  let html='';
+  Object.entries(SECS).forEach(([ttl,idxs])=>{
+    html+=`<div class="sec-div"><div class="sec-line"></div><span class="sec-lbl">${ttl}</span><div class="sec-line"></div></div>`;
+    idxs.forEach(i=>{ html+=card(QS[i],i); });
   });
-
-  area.innerHTML = html;
-
-  // animate cards on scroll
-  const cards = area.querySelectorAll('.q-card');
-  cards.forEach((c, i) => { c.style.animationDelay = `${Math.min(i * 0.04, 0.5)}s`; });
+  area.innerHTML=html;
 }
 
-function buildCard(q, i) {
-  const num = String(i+1).padStart(2,'0');
-  const badge = q.type === 'obj'
-    ? '<span class="q-badge badge-obj">객관식</span>'
-    : '<span class="q-badge badge-tf">T / F</span>';
-  const hardBadge = q.hard ? '<span class="q-badge badge-hard">고난도</span>' : '';
+function card(q,i){
+  const num=String(i+1).padStart(2,'0');
+  const b1=q.t==='obj'?'<span class="bdg bdg-obj">객관식</span>':'<span class="bdg bdg-tf">T / F</span>';
+  const b2=q.h?'<span class="bdg bdg-hard">고난도</span>':'';
+  const LBLS=['①','②','③','④','⑤'];
 
-  let controls = '';
-  if (q.type === 'obj') {
-    const labels = ['①','②','③','④','⑤'];
-    controls = `<div class="opts">${q.opts.map((o,j) =>
-      `<button class="opt" id="q${i}o${j}" onclick="pickOpt(${i},${j})">`+
-      `<span class="opt-idx">${labels[j]}</span><span>${o}</span></button>`
-    ).join('')}</div>`;
+  let ctrl='';
+  if(q.t==='obj'){
+    ctrl=`<div class="opts">${q.o.map((o,j)=>`<button class="opt" id="q${i}o${j}" onclick="pick(${i},${j})"><span class="opt-i">${LBLS[j]}</span><span>${o}</span></button>`).join('')}</div>`;
   } else {
-    controls = `<div class="tf-row">
-      <button class="tf-btn" id="q${i}oT" onclick="pickTF(${i},1)">○<span class="tf-label">참 (True)</span></button>
-      <button class="tf-btn" id="q${i}oF" onclick="pickTF(${i},0)">✕<span class="tf-label">거짓 (False)</span></button>
-    </div>`;
+    ctrl=`<div class="tfrow"><button class="tfbtn" id="q${i}oT" onclick="pickTF(${i},1)">○<span class="tflabel">참 (True)</span></button><button class="tfbtn" id="q${i}oF" onclick="pickTF(${i},0)">✕<span class="tflabel">거짓 (False)</span></button></div>`;
   }
-
-  return `
-    <div class="q-wrap">
-      <div class="q-card" id="card${i}">
-        <div class="q-meta">
-          <span class="q-num">Q${num}</span>
-          ${badge}
-          ${hardBadge}
-        </div>
-        <p class="q-text">${q.text}</p>
-        ${controls}
-        <div class="feedback" id="fb${i}"></div>
-      </div>
-    </div>`;
+  return `<div class="qwrap"><div class="qcard" id="card${i}"><div class="qmeta"><span class="qno">Q${num}</span>${b1}${b2}</div><p class="qtxt">${q.q}</p>${ctrl}<div class="fb" id="fb${i}"></div></div></div>`;
 }
 
-function pickOpt(qi, oi) {
-  if (answered.has(qi)) return;
-  answered.add(qi);
-  const q = QS[qi];
-  const labels = ['①','②','③','④','⑤'];
-
-  for (let j = 0; j < q.opts.length; j++) {
-    const el = document.getElementById(`q${qi}o${j}`);
-    if (el) { el.disabled = true; }
-    if (j === q.ans) el.classList.add('opt-correct');
-    else if (j === oi) el.classList.add('opt-selected-wrong');
+function pick(qi,oi){
+  if(done.has(qi)) return;
+  done.add(qi);
+  const q=QS[qi], LBLS=['①','②','③','④','⑤'];
+  for(let j=0;j<q.o.length;j++){
+    const el=document.getElementById(`q${qi}o${j}`);
+    if(!el) continue;
+    el.disabled=true;
+    if(j===q.a) el.classList.add('ok');
+    else if(j===oi) el.classList.add('no');
   }
-
-  const correct = oi === q.ans;
-  if (correct) score++;
-  updateHeader();
-  showFeedback(qi, correct, q.exp, correct ? null : labels[q.ans]);
-  updateCard(qi, correct);
+  const ok=oi===q.a;
+  if(ok) score++;
+  feedback(qi,ok,q.e,ok?null:LBLS[q.a]);
+  document.getElementById(`card${qi}`).classList.add(ok?'c-ok':'c-no');
+  updateHdr();
 }
 
-function pickTF(qi, val) {
-  if (answered.has(qi)) return;
-  answered.add(qi);
-  const q = QS[qi];
-
-  const tBtn = document.getElementById(`q${qi}oT`);
-  const fBtn = document.getElementById(`q${qi}oF`);
-  tBtn.disabled = fBtn.disabled = true;
-
-  const correct = val === q.ans;
-  if (val === 1) tBtn.classList.add(correct ? 'tf-correct' : 'tf-wrong');
-  else fBtn.classList.add(correct ? 'tf-correct' : 'tf-wrong');
-  if (!correct) {
-    (q.ans === 1 ? tBtn : fBtn).classList.add('tf-correct');
-  }
-
-  if (correct) score++;
-  updateHeader();
-  showFeedback(qi, correct, q.exp, correct ? null : (q.ans===1?'○ (참)':'✕ (거짓)'));
-  updateCard(qi, correct);
+function pickTF(qi,val){
+  if(done.has(qi)) return;
+  done.add(qi);
+  const q=QS[qi];
+  const tBtn=document.getElementById(`q${qi}oT`), fBtn=document.getElementById(`q${qi}oF`);
+  tBtn.disabled=fBtn.disabled=true;
+  const ok=val===q.a;
+  if(val===1) tBtn.classList.add(ok?'ok':'no');
+  else fBtn.classList.add(ok?'ok':'no');
+  if(!ok)(q.a===1?tBtn:fBtn).classList.add('ok');
+  if(ok) score++;
+  feedback(qi,ok,q.e,ok?null:(q.a===1?'○ (참)':'✕ (거짓)'));
+  document.getElementById(`card${qi}`).classList.add(ok?'c-ok':'c-no');
+  updateHdr();
 }
 
-function showFeedback(qi, correct, exp, ansLabel) {
-  const fb = document.getElementById(`fb${qi}`);
-  fb.className = `feedback show ${correct ? 'fb-ok' : 'fb-no'}`;
-  if (correct) {
-    fb.innerHTML = `<strong>✓ 정답!</strong> ${exp}`;
-  } else {
-    fb.innerHTML = `<strong>✗ 오답.</strong> 정답: <strong>${ansLabel}</strong> — ${exp}`;
-  }
+function feedback(qi,ok,exp,lbl){
+  const fb=document.getElementById(`fb${qi}`);
+  fb.className=`fb on ${ok?'ok':'no'}`;
+  fb.innerHTML=ok?`<strong>✓ 정답!</strong> ${exp}`:`<strong>✗ 오답.</strong> 정답: <strong>${lbl}</strong> — ${exp}`;
 }
 
-function updateCard(qi, correct) {
-  const card = document.getElementById(`card${qi}`);
-  card.classList.add(correct ? 'answered-correct' : 'answered-wrong');
+function updateHdr(){
+  const n=done.size, pct=Math.round(n/QS.length*100);
+  document.getElementById('ptxt').textContent=`${n} / ${QS.length}`;
+  document.getElementById('ppct').textContent=`${pct}%`;
+  document.getElementById('pfill').style.width=pct+'%';
+  document.getElementById('spill').textContent=`${score}점`;
+  if(n===QS.length) setTimeout(showResult,1100);
 }
 
-function updateHeader() {
-  const n = answered.size;
-  const pct = Math.round(n / QS.length * 100);
-  document.getElementById('prog-text').textContent = `${n} / ${QS.length}`;
-  document.getElementById('prog-pct').textContent = `${pct}%`;
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('score-badge').textContent = `${score}점`;
+function showResult(){
+  show('result');
+  window.scrollTo(0,0);
+  const w=done.size-score, s=QS.length-done.size;
+  document.getElementById('rscore').textContent=score;
+  document.getElementById('rok').textContent=score;
+  document.getElementById('rno').textContent=w;
+  document.getElementById('rsk').textContent=s;
+  const pct=Math.round(score/QS.length*100);
+  const msgs=['PPT를 처음부터 다시 꼼꼼히 읽고 재도전하세요.','핵심 개념 위주로 다시 정독이 필요합니다.','합격 수준이지만 고난도 개념을 한 번 더 점검하세요.','훌륭한 실력입니다. 틀린 문제만 복습하세요.','완벽합니다! 시험장에서도 이 실력 그대로 발휘하세요!'];
+  document.getElementById('rmsg').textContent=msgs[pct>=90?4:pct>=75?3:pct>=60?2:pct>=40?1:0];
 
-  if (n === QS.length) {
-    setTimeout(showResult, 1200);
-  }
-}
-
-function showResult() {
-  document.getElementById('quiz-screen').classList.remove('active');
-  document.getElementById('result-screen').classList.add('active');
-  window.scrollTo(0, 0);
-
-  const wrong = answered.size - score;
-  const skip = QS.length - answered.size;
-
-  document.getElementById('res-score').textContent = score;
-  document.getElementById('res-correct').textContent = score;
-  document.getElementById('res-wrong').textContent = wrong;
-  document.getElementById('res-skip').textContent = skip;
-
-  const pct = Math.round(score / QS.length * 100);
-  let msg = '';
-  if (pct >= 90) msg = '완벽합니다. 시험장에서도 이 실력 그대로 발휘하세요!';
-  else if (pct >= 75) msg = '훌륭한 실력입니다. 틀린 문제만 한 번 더 복습하세요.';
-  else if (pct >= 60) msg = '합격 수준이지만, 고난도 개념을 한 번 더 점검하세요.';
-  else if (pct >= 40) msg = '핵심 개념 위주로 다시 정독이 필요합니다.';
-  else msg = 'PPT를 처음부터 다시 꼼꼼히 읽고 재도전해보세요.';
-  document.getElementById('res-msg').textContent = msg;
-
-  // Review wrong answers
-  const reviewList = document.getElementById('review-list');
-  let reviewHtml = '';
-  QS.forEach((q, i) => {
-    if (!answered.has(i)) {
-      reviewHtml += `<div class="review-item">
-        <div class="review-dot dot-wrong"></div>
-        <div class="review-q">
-          <strong>Q${i+1}.</strong> ${q.text.replace(/<[^>]+>/g,'').substring(0,80)}...
-          <span class="tag">미응답 — ${q.type==='obj'?'객관식':'T/F'}</span>
-        </div>
-      </div>`;
+  let html='';
+  QS.forEach((q,i)=>{
+    const card=document.getElementById(`card${i}`);
+    if(!done.has(i)||( card&&card.classList.contains('c-no'))){
+      const lbl=q.t==='obj'?['①','②','③','④','⑤'][q.a]:(q.a===1?'○ (참)':'✕ (거짓)');
+      const label=done.has(i)?`정답: ${lbl}`:'미응답';
+      html+=`<div class="rev-item"><div class="rdot"></div><div class="rq"><strong>Q${i+1}.</strong> ${q.q.replace(/<[^>]+>/g,'').substring(0,85)}…<span class="rtag">${label} | ${q.t==='obj'?'객관식':'T/F'}</span></div></div>`;
     }
   });
-
-  let wrongItems = [];
-  QS.forEach((q, i) => {
-    if (answered.has(i)) {
-      const card = document.getElementById(`card${i}`);
-      if (card && card.classList.contains('answered-wrong')) {
-        wrongItems.push({q, i});
-      }
-    }
-  });
-
-  if (wrongItems.length === 0 && !reviewHtml) {
-    reviewList.innerHTML = '<p style="text-align:center;color:var(--text3);font-size:14px;padding:20px 0;">틀린 문제가 없습니다! 🎉</p>';
-  } else {
-    wrongItems.forEach(({q, i}) => {
-      const ansLabel = q.type === 'obj'
-        ? ['①','②','③','④','⑤'][q.ans]
-        : (q.ans === 1 ? '○ (참)' : '✕ (거짓)');
-      reviewHtml += `<div class="review-item">
-        <div class="review-dot dot-wrong"></div>
-        <div class="review-q">
-          <strong>Q${i+1}.</strong> ${q.text.replace(/<[^>]+>/g,'').substring(0,90)}
-          <span class="tag">정답: ${ansLabel} | ${q.type==='obj'?'객관식':'T/F'}</span>
-        </div>
-      </div>`;
-    });
-    reviewList.innerHTML = reviewHtml;
-  }
+  document.getElementById('revlist').innerHTML=html||'<p style="text-align:center;color:#5a5550;padding:24px 0;font-size:14px;">틀린 문제가 없습니다 🎉</p>';
 }
 
-function retryQuiz() {
-  score = 0;
-  answered = new Set();
-  document.getElementById('result-screen').classList.remove('active');
-  document.getElementById('quiz-screen').classList.add('active');
-  buildQuestions();
-  updateHeader();
-  window.scrollTo(0, 0);
+function retry(){
+  score=0; done=new Set();
+  show('quiz');
+  buildQ();
+  document.getElementById('ptxt').textContent='0 / 40';
+  document.getElementById('ppct').textContent='0%';
+  document.getElementById('pfill').style.width='0%';
+  document.getElementById('spill').textContent='0점';
+  window.scrollTo(0,0);
 }
 </script>
 </body>
