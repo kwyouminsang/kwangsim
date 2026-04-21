@@ -816,7 +816,7 @@ function buildQ(){
 function card(q,i){
   const num=String(i+1).padStart(2,'0');
   const b1=q.t==='obj'?'<span class="bdg bdg-obj">객관식</span>':'<span class="bdg bdg-tf">T / F</span>';
-  const b2=q.h?'<span class="bdg bdg-hard">고난도</span>':'';
+  const b2=q.h?'<span class="bdg bdg-hard">출제 가능성 높음</span>':'';
   const LBLS=['①','②','③','④','⑤'];
 
   let ctrl='';
